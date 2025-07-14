@@ -1,14 +1,8 @@
 using UnityEngine;
 
-public class RocketLauncher : RangedWeapon
+public class RocketLauncher : ProjectileWeapon
 {
-    public override bool Shoot(Vector3 startPos, Vector3 direction) {
-        if (!base.Shoot(startPos, direction)) {
-            return false;
-        }
+    public override void ResolveProjectileCollision(int layerHit) {
 
-
-
-        return true;
     }
 }

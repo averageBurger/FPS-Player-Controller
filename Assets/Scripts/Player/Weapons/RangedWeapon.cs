@@ -1,19 +1,21 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 // CREATED BY: Sean
 // abstract class to act as a parent to all ranged weapons.
 public abstract class RangedWeapon : MonoBehaviour
 {
+    [Header("Stats")]
     [SerializeField] protected float range;
     [SerializeField] protected int damage;
     [SerializeField] protected float weakpointMultiplier;
-
     [SerializeField] protected int magazineSize;
     [SerializeField] protected int startingAmmo;
     [SerializeField] protected float reloadTime;
     [SerializeField] protected float fireRate;
+
     protected int ammoInMagazine;
     protected int ammoInReserve;
 
@@ -28,7 +30,7 @@ public abstract class RangedWeapon : MonoBehaviour
         ammoInMagazine = magazineSize;
     }
 
-    public virtual bool Shoot(Vector3 startPos, Vector3 direction) {
+    public virtual bool Shoot(Vector3 direction) {
         if (ammoInMagazine == 0 || reloading || !canShoot) {
             return false;
         }

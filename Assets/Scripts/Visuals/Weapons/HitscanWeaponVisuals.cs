@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class RangedWeaponVisuals : MonoBehaviour
+public class HitscanWeaponVisuals : MonoBehaviour
 {
     [SerializeField] private RangedWeapon weapon;
     [SerializeField] private Transform visualBulletSpawnPoint;

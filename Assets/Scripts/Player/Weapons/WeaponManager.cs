@@ -8,6 +8,7 @@ public class WeaponManager : MonoBehaviour
 {
     public static WeaponManager Instance { get; private set; }
 
+    [Header("Equipped Weapons")]
     [SerializeField] private RangedWeapon equippedRangedWeapon;
 
     [Header("Layer Masks")]
@@ -16,8 +17,8 @@ public class WeaponManager : MonoBehaviour
     [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private LayerMask enemyWeakpointLayer;
 
-    [Header("Temporary")]
-    [SerializeField] private Transform bulletStartPoint;
+    [Header("References")]
+    [SerializeField] private Transform bulletSpawnPointTransform;
 
     public event EventHandler OnAmmoChanged;
 
@@ -35,17 +36,25 @@ public class WeaponManager : MonoBehaviour
         equippedRangedWeapon.Reload();
     }
 
-    // need a way to get a direction from the input class (or use that fire from centre of screen thing?)
+    // likely switch out for ViewportPointToRay() later (for hitscan)? OR just get look direction
     private void WeaponManager_OnRangedAttackButtonPressed(object sender, System.EventArgs e) {
-        equippedRangedWeapon.Shoot(bulletStartPoint.position, Vector3.right);
+        equippedRangedWeapon.Shoot(Vector3.right);
     }
 
     public RangedWeapon GetEquippedRangedWeapon(){ return equippedRangedWeapon;}
 
     public LayerMask GetRangedWeaponLayerMask() { return rangedWeaponLayerMask; }
-    public LayerMask GetObstacleLayer() { return obstacleLayer; }
-    public LayerMask GetEnemyLayer() { return enemyLayer; }
-    public LayerMask GetEnemyWeakpointLayer () { return enemyWeakpointLayer; }
+
+    // layers are stored in binary, its weird. Have to bitshift
+    public bool HasHitObstacle(int layerHit) {
+        return 1 == obstacleLayer.value >> layerHit;
+    }
+
+    public bool HasHitEnemyWeakpoint(int layerHit) {
+        return 1 == enemyWeakpointLayer.value >> layerHit;
+    }
+
+    public Vector3 GetBulletSpawnPoint() { return bulletSpawnPointTransform.position; }
 
     public void CallOnAmmoChanged() {
         OnAmmoChanged?.Invoke(this, EventArgs.Empty);
