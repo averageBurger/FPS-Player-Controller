@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 // CREATED BY: Sean
@@ -18,6 +19,8 @@ public class WeaponManager : MonoBehaviour
     [Header("Temporary")]
     [SerializeField] private Transform bulletStartPoint;
 
+    public event EventHandler OnAmmoChanged;
+
     private void Awake() {
         Instance = this;
     }
@@ -25,6 +28,11 @@ public class WeaponManager : MonoBehaviour
     void Start()
     {
         InputManager.Instance.OnRangedAttackButtonPressed += WeaponManager_OnRangedAttackButtonPressed;
+        InputManager.Instance.OnReloadButtonPressed += WeaponManager_OnReloadButtonPressed;
+    }
+
+    private void WeaponManager_OnReloadButtonPressed(object sender, System.EventArgs e) {
+        equippedRangedWeapon.Reload();
     }
 
     // need a way to get a direction from the input class (or use that fire from centre of screen thing?)
@@ -32,8 +40,14 @@ public class WeaponManager : MonoBehaviour
         equippedRangedWeapon.Shoot(bulletStartPoint.position, Vector3.right);
     }
 
+    public RangedWeapon GetEquippedRangedWeapon(){ return equippedRangedWeapon;}
+
     public LayerMask GetRangedWeaponLayerMask() { return rangedWeaponLayerMask; }
     public LayerMask GetObstacleLayer() { return obstacleLayer; }
     public LayerMask GetEnemyLayer() { return enemyLayer; }
     public LayerMask GetEnemyWeakpointLayer () { return enemyWeakpointLayer; }
+
+    public void CallOnAmmoChanged() {
+        OnAmmoChanged?.Invoke(this, EventArgs.Empty);
+    }
 }

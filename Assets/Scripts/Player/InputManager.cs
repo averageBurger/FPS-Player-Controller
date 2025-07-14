@@ -8,6 +8,7 @@ public class InputManager : MonoBehaviour
 
     public event EventHandler OnRangedAttackButtonPressed;
     public event EventHandler OnMeleeAttackButtonPressed;
+    public event EventHandler OnReloadButtonPressed;
 
     private void Awake() {
         Instance = this;
@@ -17,6 +18,11 @@ public class InputManager : MonoBehaviour
 
         inputActions.Player.RangedAttack.performed += RangedAttack_performed;
         inputActions.Player.MeleeAttack.performed += MeleeAttack_performed;
+        inputActions.Player.Reload.performed += Reload_performed;
+    }
+
+    private void Reload_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
+        OnReloadButtonPressed?.Invoke(this, EventArgs.Empty);
     }
 
     private void RangedAttack_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj) {

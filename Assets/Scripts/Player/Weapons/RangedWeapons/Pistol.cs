@@ -1,4 +1,5 @@
-using JetBrains.Annotations;
+using System;
+using System.Collections;
 using UnityEngine;
 
 // CREATED BY: Sean
@@ -6,14 +7,14 @@ using UnityEngine;
 public class Pistol : RangedWeapon
 {
 
-    [SerializeField] private float range;
-    [SerializeField] private int damage;
-    [SerializeField] private float headShotMultiplier;
+    public override bool Shoot(Vector3 startPos, Vector3 direction) {
+        if (!base.Shoot(startPos, direction)) {
+            return false;
+        }
 
-    public override void Shoot(Vector3 startPos, Vector3 direction) {
         if (!Physics.Raycast(startPos, direction, out RaycastHit raycastHit, range, WeaponManager.Instance.GetRangedWeaponLayerMask())) {
             Debug.Log("hit nothing!");
-            return;
+            return true;
         }
 
         int layer = raycastHit.transform.gameObject.layer;
@@ -21,16 +22,17 @@ public class Pistol : RangedWeapon
         bool hitObstacle = 1 == WeaponManager.Instance.GetObstacleLayer().value >> layer;
         if (hitObstacle) {
             Debug.Log("Blocked!");
-            return;
+            return true;
         }
 
         bool hitWeakpoint = 1 == WeaponManager.Instance.GetEnemyWeakpointLayer().value >> layer;
         int damageDealt = damage;
         if (hitWeakpoint) {
-            damageDealt = (int) (damage * headShotMultiplier);
+            damageDealt = (int) (damage * weakpointMultiplier);
         }
 
         //raycastHit.transform.GetComponent<???>().TakeDamage();
         Debug.Log("Deal Damage! : " + damageDealt);
+        return true;
     }
 }
