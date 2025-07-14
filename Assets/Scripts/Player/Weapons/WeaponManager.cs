@@ -38,7 +38,7 @@ public class WeaponManager : MonoBehaviour
 
     // likely switch out for ViewportPointToRay() later (for hitscan)? OR just get look direction
     private void WeaponManager_OnRangedAttackButtonPressed(object sender, System.EventArgs e) {
-        equippedRangedWeapon.Shoot(Vector3.right);
+        equippedRangedWeapon.Shoot(Vector3.forward);
     }
 
     public RangedWeapon GetEquippedRangedWeapon(){ return equippedRangedWeapon;}
@@ -48,6 +48,10 @@ public class WeaponManager : MonoBehaviour
     // layers are stored in binary, its weird. Have to bitshift
     public bool HasHitObstacle(int layerHit) {
         return 1 == obstacleLayer.value >> layerHit;
+    }
+
+    public bool HasHitEnemy(int layerHit) {
+        return 1 == enemyLayer.value >> layerHit || HasHitEnemyWeakpoint(layerHit);
     }
 
     public bool HasHitEnemyWeakpoint(int layerHit) {

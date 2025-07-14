@@ -10,12 +10,14 @@ public class Projectile : MonoBehaviour
     }
 
     public void Initialise(ProjectileWeapon sender, Vector3 dir, float speed) {
+        Debug.Log("received!");
         projectileWeaponParent = sender;
         rb.AddRelativeForce(dir * speed, ForceMode.Impulse);
     }
 
     private void OnCollisionEnter(Collision collision) {
-        int layerHit = collision.gameObject.layer;
-        projectileWeaponParent.ResolveProjectileCollision(layerHit);
+        GameObject gameObjectHit = collision.gameObject;
+        projectileWeaponParent.ResolveProjectileCollision(gameObjectHit);
+        Destroy(gameObject);
     }
 }

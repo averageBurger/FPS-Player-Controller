@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 1848184995088672778}
   - component: {fileID: 5914263472558811030}
   - component: {fileID: 4652398759471203756}
-  - component: {fileID: 3071485559089989813}
+  - component: {fileID: 4549798602132028220}
   m_Layer: 0
   m_Name: RocketLauncherProjectile
   m_TagString: Untagged
@@ -169,7 +169,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &3071485559089989813
+--- !u!114 &4549798602132028220
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -178,7 +178,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5187422040411955134}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e11b18fab2c7554e8fcc7b1159f0b84, type: 3}
+  m_Script: {fileID: 11500000, guid: 75eff98795ec3c741ad8fc73b145960a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &5998971400955376077

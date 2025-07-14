@@ -28,7 +28,7 @@ public class Pistol : RangedWeapon
             damageDealt = (int) (damage * weakpointMultiplier);
         }
 
-        //raycastHit.transform.GetComponent<???>().TakeDamage();
+        //raycastHit.transform.GetComponent<???>().TakeDamage(damageDealt);
         Debug.Log("Deal Damage! : " + damageDealt);
         return true;
     }

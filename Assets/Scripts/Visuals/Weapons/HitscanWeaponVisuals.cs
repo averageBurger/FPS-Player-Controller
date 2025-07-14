@@ -21,9 +21,9 @@ public class HitscanWeaponVisuals : MonoBehaviour
     }
 
     private IEnumerator ReloadTempAnimation() {
-        transform.Rotate(Vector3.forward * 70);
+        transform.Rotate(Vector3.right * 70);
         yield return new WaitForSeconds(weapon.GetReloadTime());
-        transform.Rotate(Vector3.back * 70);
+        transform.Rotate(Vector3.left * 70);
     }
 
     private void Weapon_OnRangedWeaponShot(object sender, System.EventArgs e) {
@@ -31,7 +31,7 @@ public class HitscanWeaponVisuals : MonoBehaviour
 
         lineRenderer.SetPositions(new Vector3[2] {
             spawn,
-            new Vector3 (spawn.x + 2, spawn.y, spawn.z)
+            new Vector3 (spawn.x, spawn.y, spawn.z + 2)
         });
         lineRenderer.startWidth = 0.2f;
         StartCoroutine(ShotVisualTimerCoroutine());

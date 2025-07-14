@@ -17,10 +17,11 @@ public abstract class ProjectileWeapon : RangedWeapon
 
         GameObject newProjectileGO = Instantiate(projectileGameObject, projectileSpawnPointTransform.position, Quaternion.identity);
         Projectile newProjectile = newProjectileGO.GetComponent<Projectile>();
+        Debug.Log("initialise!");
         newProjectile.Initialise(this, direction, projectileSpeed);
 
         return true;
     }
 
-    public abstract void ResolveProjectileCollision(int layerHit);
+    public abstract void ResolveProjectileCollision(GameObject gameObjectHit);
 }
