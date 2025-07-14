@@ -1,38 +1,80 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class MeleeEnemyAI : MonoBehaviour
+// Contains code for the behaviour and pathfinding of a melee enemy
+public class MeleeEnemyAI : EnemyAI
 {
-    public Transform player;
+    [Header("AI")]
+    public float detectionRange = 15f;
+    public float attackRange = 2f;
 
     private NavMeshAgent navAgent;
     private Enemy enemyStats;
+
+    private float attackCooldownTimer = 0f;
 
     void Start()
     {
         navAgent = GetComponent<NavMeshAgent>();
         enemyStats = GetComponent<Enemy>();
+
+        navAgent.speed = enemyStats.MovementSpeed;
     }
 
     void Update()
     {
-        // Check if the player is within the enemy's FOV
-        // Check if the player is within the enemy's attack range 
+        // Failsafe incase the player does not exist
+        if (player == null)
+        {
+            Debug.LogWarning("Target player has not been assigned to an enemy!");
+            return;
+        }
+
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        bool canSeePlayer = CanSeePlayer();
+
+        if (distanceToPlayer <= attackRange && canSeePlayer) 
+        { 
+            AttackPlayer();
+        }
+        else if (distanceToPlayer <= detectionRange && canSeePlayer)
+        {
+            FollowPlayer();
+        }
+        else
+        {
+            // If the player is not in range/not visible we stop moving
+            navAgent.isStopped = true;
+        }
+
+        if (attackCooldownTimer > 0f)
+        {
+            attackCooldownTimer -= Time.deltaTime;
+        }
     }
 
+    // Uses the NavMesh to navigate to the player
     private void FollowPlayer()
     {
-        // Pathfind to the player using the specified NavMesh for the level
-        // Stop following when close enough to the player to be able to attack
+        navAgent.isStopped = false;
+        navAgent.SetDestination(player.position);
     }
 
     private void AttackPlayer()
     {
-        // Look at the player
-        // Attack using respective weapon
-        // Initiate cooldown
+        navAgent.isStopped = true;
 
+        // TODO: Look at the player
+        Vector3 lookingDir = player.position - transform.position;
+        lookingDir.y = 0f;
+
+        // Attack
+        if (attackCooldownTimer <= 0f) 
+        {
+            Debug.Log($"Enemy attacks for {enemyStats.AttackDamage} damage!");
+            // TODO: Trigger animation and deal damage to the player
+
+            attackCooldownTimer = enemyStats.AttackCooldown;
+        }
     }
-
-
 }
