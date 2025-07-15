@@ -96,7 +96,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1836147222451526710}
   m_Layer: 0
-  m_Name: WeaponTemplate
+  m_Name: RangedWeaponTemplate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

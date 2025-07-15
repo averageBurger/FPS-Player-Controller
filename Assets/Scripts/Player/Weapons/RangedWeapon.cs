@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 // CREATED BY: Sean
 // abstract class to act as a parent to all ranged weapons.

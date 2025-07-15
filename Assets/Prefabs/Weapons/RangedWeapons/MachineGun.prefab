@@ -234,7 +234,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   range: 15
   damage: 1
-  weakpointMultiplier: 1.5
+  weakpointMultiplier: 2
   magazineSize: 100
   startingAmmo: 1000
   reloadTime: 2

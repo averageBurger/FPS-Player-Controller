@@ -12,7 +12,7 @@ public class RocketLauncher : ProjectileWeapon
             Debug.Log("Deal Direct Damage: " + damage);
         }
 
-        Collider[] nearbyObjectColliders = Physics.OverlapSphere(projectilePosition, explosionRadius, WeaponManager.Instance.GetRangedWeaponLayerMask()); 
+        Collider[] nearbyObjectColliders = Physics.OverlapSphere(projectilePosition, explosionRadius, WeaponManager.Instance.GetWeaponInteractableLayerMask()); 
 
         foreach (Collider c in nearbyObjectColliders) {
             if (WeaponManager.Instance.HasHitEnemy(c.gameObject.layer) && IsInSplashLineOfSight(projectilePosition, c)) {
@@ -24,16 +24,10 @@ public class RocketLauncher : ProjectileWeapon
 
 
     private bool IsInSplashLineOfSight(Vector3 projectilePosition, Collider c) {
-        Debug.Log(c.gameObject.name);
-
         Vector3 dir = (c.transform.position - projectilePosition).normalized;
-        Physics.Raycast(projectilePosition, dir, out RaycastHit raycastHit, explosionRadius, WeaponManager.Instance.GetRangedWeaponLayerMask());
+        Physics.Raycast(projectilePosition, dir, out RaycastHit raycastHit, explosionRadius, WeaponManager.Instance.GetWeaponInteractableLayerMask());
         int layer = raycastHit.transform.gameObject.layer;
-        if (!WeaponManager.Instance.HasHitEnemy(layer)) {
-            Debug.Log("non enemy in the way");
-            return false;
-        }
 
-        return true;
+        return WeaponManager.Instance.HasHitEnemy(layer);
     }
 }

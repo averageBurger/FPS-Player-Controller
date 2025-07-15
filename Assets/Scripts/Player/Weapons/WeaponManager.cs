@@ -10,15 +10,17 @@ public class WeaponManager : MonoBehaviour
 
     [Header("Equipped Weapons")]
     [SerializeField] private RangedWeapon equippedRangedWeapon;
+    [SerializeField] private MeleeWeapon equippedMeleeWeapon;
 
     [Header("Layer Masks")]
-    [SerializeField] private LayerMask rangedWeaponLayerMask;
+    [SerializeField] private LayerMask weaponInteractableLayerMask;
     [SerializeField] private LayerMask obstacleLayer;
     [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private LayerMask enemyWeakpointLayer;
 
     [Header("References")]
     [SerializeField] private Transform bulletSpawnPointTransform;
+    [SerializeField] private Transform meleeAttackShapeSpawnPointTransform;
 
     public event EventHandler OnAmmoChanged;
 
@@ -28,22 +30,28 @@ public class WeaponManager : MonoBehaviour
 
     void Start()
     {
-        InputManager.Instance.OnRangedAttackButtonPressed += WeaponManager_OnRangedAttackButtonPressed;
-        InputManager.Instance.OnReloadButtonPressed += WeaponManager_OnReloadButtonPressed;
+        InputManager.Instance.OnRangedAttackButtonPressed += InputManager_OnRangedAttackButtonPressed;
+        InputManager.Instance.OnReloadButtonPressed += InputManager_OnReloadButtonPressed;
+        InputManager.Instance.OnMeleeAttackButtonPressed += InputManager_OnMeleeAttackButtonPressed;
     }
 
-    private void WeaponManager_OnReloadButtonPressed(object sender, System.EventArgs e) {
+    private void InputManager_OnMeleeAttackButtonPressed(object sender, EventArgs e) {
+        Debug.Log("Melee Attack!");
+        equippedMeleeWeapon.Attack(Vector3.forward);
+    }
+
+    private void InputManager_OnReloadButtonPressed(object sender, System.EventArgs e) {
         equippedRangedWeapon.Reload();
     }
 
     // likely switch out for ViewportPointToRay() later (for hitscan)? OR just get look direction
-    private void WeaponManager_OnRangedAttackButtonPressed(object sender, System.EventArgs e) {
+    private void InputManager_OnRangedAttackButtonPressed(object sender, System.EventArgs e) {
         equippedRangedWeapon.Shoot(Vector3.forward);
     }
 
     public RangedWeapon GetEquippedRangedWeapon(){ return equippedRangedWeapon;}
 
-    public LayerMask GetRangedWeaponLayerMask() { return rangedWeaponLayerMask; }
+    public LayerMask GetWeaponInteractableLayerMask() { return weaponInteractableLayerMask; }
 
     // layers are stored in binary, its weird. Have to bitshift
     public bool HasHitObstacle(int layerHit) {
@@ -59,6 +67,8 @@ public class WeaponManager : MonoBehaviour
     }
 
     public Vector3 GetBulletSpawnPoint() { return bulletSpawnPointTransform.position; }
+
+    public Vector3 GetMeleeAttackShapeSpawnPoint() { return meleeAttackShapeSpawnPointTransform.position; }
 
     public void CallOnAmmoChanged() {
         OnAmmoChanged?.Invoke(this, EventArgs.Empty);

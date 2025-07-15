@@ -16,9 +16,9 @@ public class ProjectileWeaponVisuals : MonoBehaviour
     }
 
     private IEnumerator ReloadTempAnimation() {
-        transform.Rotate(Vector3.left * 70);
+        transform.Rotate(Vector3.left * 70, Space.Self);
         yield return new WaitForSeconds(weapon.GetReloadTime());
-        transform.Rotate(Vector3.right * 70);
+        transform.Rotate(Vector3.right * 70, Space.Self);
     }
 
     private void Weapon_OnRangedWeaponShot(object sender, System.EventArgs e) {
