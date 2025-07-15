@@ -5,6 +5,8 @@ using UnityEngine;
 // When creating AI for an enemy, it should be a child of this class!
 public class EnemyAI : MonoBehaviour
 {
+    public virtual float DetectionRange { get; protected set; } = 15f;
+
     public Transform player;
 
     // Cast a ray from the enemy's origin point defined to be their eye level, if the ray hits the player they have been seen -> return true

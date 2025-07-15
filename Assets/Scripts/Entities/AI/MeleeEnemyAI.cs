@@ -4,21 +4,19 @@ using UnityEngine.AI;
 // Contains code for the behaviour and pathfinding of a melee enemy
 public class MeleeEnemyAI : EnemyAI
 {
-    [Header("AI")]
-    public float detectionRange = 15f;
-    public float attackRange = 2f;
-
     private NavMeshAgent navAgent;
-    private Enemy enemyStats;
+    private MeleeEnemy enemy;
+    private EnemyAI enemyAI;
 
     private float attackCooldownTimer = 0f;
 
     void Start()
     {
         navAgent = GetComponent<NavMeshAgent>();
-        enemyStats = GetComponent<Enemy>();
+        enemy = GetComponent<MeleeEnemy>();
+        enemyAI = GetComponent<EnemyAI>();
 
-        navAgent.speed = enemyStats.MovementSpeed;
+        navAgent.speed = enemy.MovementSpeed;
     }
 
     void Update()
@@ -33,11 +31,11 @@ public class MeleeEnemyAI : EnemyAI
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
         bool canSeePlayer = CanSeePlayer();
 
-        if (distanceToPlayer <= attackRange && canSeePlayer) 
+        if (distanceToPlayer <= enemy.AttackRange && canSeePlayer) 
         { 
             AttackPlayer();
         }
-        else if (distanceToPlayer <= detectionRange && canSeePlayer)
+        else if (distanceToPlayer <= enemyAI.DetectionRange && canSeePlayer)
         {
             FollowPlayer();
         }
@@ -71,10 +69,10 @@ public class MeleeEnemyAI : EnemyAI
         // Attack
         if (attackCooldownTimer <= 0f) 
         {
-            Debug.Log($"Enemy attacks for {enemyStats.AttackDamage} damage!");
+            Debug.Log($"Enemy attacks for {enemy.AttackDamage} damage!");
             // TODO: Trigger animation and deal damage to the player
 
-            attackCooldownTimer = enemyStats.AttackCooldown;
+            attackCooldownTimer = enemy.AttackCooldown;
         }
     }
 }
