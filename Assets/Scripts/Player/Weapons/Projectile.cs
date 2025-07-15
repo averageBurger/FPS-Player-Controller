@@ -17,7 +17,7 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision) {
         GameObject gameObjectHit = collision.gameObject;
-        projectileWeaponParent.ResolveProjectileCollision(gameObjectHit);
+        projectileWeaponParent.ResolveProjectileCollision(transform.position, gameObjectHit);
         Destroy(gameObject);
     }
 }

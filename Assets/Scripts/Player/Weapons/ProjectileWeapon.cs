@@ -23,5 +23,5 @@ public abstract class ProjectileWeapon : RangedWeapon
         return true;
     }
 
-    public abstract void ResolveProjectileCollision(GameObject gameObjectHit);
+    public abstract void ResolveProjectileCollision(Vector3 position, GameObject gameObjectHit);
 }

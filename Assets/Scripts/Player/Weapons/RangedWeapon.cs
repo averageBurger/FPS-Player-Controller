@@ -35,7 +35,9 @@ public abstract class RangedWeapon : MonoBehaviour
             return false;
         }
 
-        StartCoroutine(FireRateLimiter());
+        if (fireRate != 0) {
+            StartCoroutine(FireRateLimiter());
+        }
         OnRangedWeaponShot?.Invoke(this, EventArgs.Empty);
 
         ammoInMagazine -= 1;
@@ -58,11 +60,13 @@ public abstract class RangedWeapon : MonoBehaviour
         }
 
         reloading = true;
-        OnWeaponReload?.Invoke(this, EventArgs.Empty);
         StartCoroutine(ReloadTimer());
     }
 
     private IEnumerator ReloadTimer() {
+        yield return new WaitForSeconds(0.25f);
+        OnWeaponReload?.Invoke(this, EventArgs.Empty);
+
         yield return new WaitForSeconds(reloadTime);
 
         ammoInReserve += ammoInMagazine;
