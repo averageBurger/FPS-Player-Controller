@@ -16,6 +16,12 @@ public abstract class RangedWeapon : MonoBehaviour
     [SerializeField] protected float reloadTime;
     [SerializeField] protected float fireRate;
 
+    protected enum WeaponFireType {
+        SemiAutomatic,
+        Automatic
+    }
+    [SerializeField] protected WeaponFireType fireType;
+
     protected int ammoInMagazine;
     protected int ammoInReserve;
 
@@ -36,7 +42,7 @@ public abstract class RangedWeapon : MonoBehaviour
         }
 
         if (fireRate != 0) {
-            StartCoroutine(FireRateLimiter());
+            StartCoroutine(FireRateLimiter(direction));
         }
         OnRangedWeaponShot?.Invoke(this, EventArgs.Empty);
 
@@ -48,14 +54,18 @@ public abstract class RangedWeapon : MonoBehaviour
         return true;
     }
 
-    private IEnumerator FireRateLimiter() {
+    // will need to change dir to match where player is now looking
+    private IEnumerator FireRateLimiter(Vector3 dir) {
         canShoot = false;
         yield return new WaitForSeconds(1 / fireRate);
         canShoot = true;
+        if (fireType == WeaponFireType.Automatic && InputManager.Instance.IsRangedAttackButtonHeld()) {
+            Shoot(dir);
+        }
     }
 
     public virtual void Reload() {
-        if (ammoInMagazine == magazineSize || reloading || ammoInReserve == 0) {
+        if (ammoInMagazine == magazineSize || reloading || ammoInReserve == 0 || (fireType == WeaponFireType.Automatic && InputManager.Instance.IsRangedAttackButtonHeld() && ammoInMagazine != 0) ) {
             return;
         }
 

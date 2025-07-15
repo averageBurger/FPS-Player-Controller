@@ -8,13 +8,10 @@ public class Sniper : RangedWeapon
         }
 
         if (!Physics.Raycast(WeaponManager.Instance.GetBulletSpawnPoint(), direction, out RaycastHit raycastHit, range, WeaponManager.Instance.GetRangedWeaponLayerMask())) {
-            Debug.Log("hit nothing!");
             return true;
         }
-
         int layer = raycastHit.transform.gameObject.layer;
         if (WeaponManager.Instance.HasHitObstacle(layer)) {
-            Debug.Log("Blocked!");
             return true;
         }
 

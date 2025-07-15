@@ -39,4 +39,8 @@ public class InputManager : MonoBehaviour
 
         return inputVector;
     }
+
+    public bool IsRangedAttackButtonHeld() {
+        return inputActions.Player.RangedAttack.IsPressed();
+    }
 }
