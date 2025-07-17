@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody rb;
+    Vector2 inputVector;
 
     private void Awake()
     {
@@ -20,24 +21,25 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    /*public void Move(InputAction.CallbackContext context)
+    //Checks the input put in
+    public void Move(InputAction.CallbackContext context)
     {
-        Vector2 inputVector =  context.ReadValue<Vector2>();
+        inputVector =  context.ReadValue<Vector2>();
         Debug.Log(inputVector);
-        float speed = 30f;
-        rb.AddForce(new Vector3(inputVector.x, 0, inputVector.y) * speed, ForceMode.Force);
-    }*/
-
-
-    private void FixedUpdate() {
-        HandleMovement();
     }
 
-    private void HandleMovement() {
+    // Applies the force into the direction decided by the input
+    private void FixedUpdate()
+    {
+        float speed = 30f;
+        rb.AddForce(new Vector3(inputVector.x, 0, inputVector.y) * speed, ForceMode.Force);
+    }
+
+    /*private void HandleMovement() {
         Vector2 moveInput = InputManager.Instance.GetMovementVectorNormalised();
         Vector3 moveVector = new Vector3(moveInput.x, 0, moveInput.y);
         float speed = 5f;
 
         rb.linearVelocity = moveVector * speed;
-    }
+    }*/
 }
