@@ -8,9 +8,9 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 public class Pistol : HitscanWeapon
 {
     protected override void HitEnemyEffect(bool hitWeakpoint) {
-        int damageDealt = damage;
+        float damageDealt = damage;
         if (hitWeakpoint) {
-            damageDealt = (int)(damage * weakpointMultiplier);
+            damageDealt = damage * weakpointMultiplier;
         }
 
         //raycastHit.transform.GetComponent<???>().TakeDamage(damageDealt);

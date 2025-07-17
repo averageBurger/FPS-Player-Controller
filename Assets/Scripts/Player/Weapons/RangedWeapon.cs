@@ -8,7 +8,7 @@ public abstract class RangedWeapon : MonoBehaviour
 {
     [Header("Stats")]
     [SerializeField] protected float range;
-    [SerializeField] protected int damage;
+    [SerializeField] protected float damage;
     [SerializeField] protected float weakpointMultiplier;
     [SerializeField] protected int magazineSize;
     [SerializeField] protected int startingAmmo;

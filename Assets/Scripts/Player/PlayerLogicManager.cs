@@ -4,11 +4,11 @@ public class PlayerLogicManager : MonoBehaviour
 {
     public static PlayerLogicManager Instance { get; private set; }
 
-    [SerializeField] private int maxHealth;
-    public int currentHealth;
+    [SerializeField] private float maxHealth;
+    public float currentHealth;
 
-    [SerializeField] private int maxStamina;
-    private int currentStamina;
+    [SerializeField] private float maxStamina;
+    private float currentStamina;
 
     public bool isDead { get; private set; } = false;
 
@@ -16,7 +16,7 @@ public class PlayerLogicManager : MonoBehaviour
         Instance = this;
     }
 
-    public void TakeDamage(int damageAmount) {
+    public void TakeDamage(float damageAmount) {
         if (currentHealth == 0 || damageAmount < 1) {
             return;
         }
@@ -28,7 +28,7 @@ public class PlayerLogicManager : MonoBehaviour
         }
     }
 
-    public void HealDamage(int healAmount) {
+    public void HealDamage(float healAmount) {
         if (currentHealth == maxHealth || healAmount < 1) {
             return;
         }
@@ -42,10 +42,10 @@ public class PlayerLogicManager : MonoBehaviour
         }
     }
 
-    public int GetCurrentHealth() { return currentHealth; }
+    public float GetCurrentHealth() { return currentHealth; }
 
 
-    public void DrainStamina(int drainAmount) {
+    public void DrainStamina(float drainAmount) {
         if (currentStamina == 0 || drainAmount < 1) {
             return;
         }
@@ -56,7 +56,7 @@ public class PlayerLogicManager : MonoBehaviour
         }
     }
 
-    public void GainStamina(int gainAmount) {
+    public void GainStamina(float gainAmount) {
         if (currentStamina == maxStamina || gainAmount < 1) {
             return;
         }
@@ -67,5 +67,5 @@ public class PlayerLogicManager : MonoBehaviour
         }
     }
 
-    public int GetCurrentStamina() { return currentStamina; }
+    public float GetCurrentStamina() { return currentStamina; }
 }
