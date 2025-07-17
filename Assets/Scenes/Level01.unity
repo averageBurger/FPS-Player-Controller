@@ -284,7 +284,7 @@ GameObject:
   - component: {fileID: 702035663}
   - component: {fileID: 702035664}
   - component: {fileID: 702035656}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Enemy2 (Ranged)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -447,7 +447,7 @@ GameObject:
   - component: {fileID: 806608960}
   - component: {fileID: 806608959}
   - component: {fileID: 806608958}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Enemy1 (Melee) (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -607,7 +607,7 @@ GameObject:
   - component: {fileID: 1031512352}
   - component: {fileID: 1031512351}
   - component: {fileID: 1031512350}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Enemy1 (Melee) (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1398,7 +1398,7 @@ GameObject:
   - component: {fileID: 1877414060}
   - component: {fileID: 1877414061}
   - component: {fileID: 1877414062}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Enemy1 (Melee)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
