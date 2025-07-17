@@ -15,7 +15,7 @@ public class EnemyAI : MonoBehaviour
         Vector3 originPoint = transform.position + Vector3.up * 1.5f;
         // Assumption that all enemies are of the same height, this is fine for now
         Vector3 direction = (player.position - originPoint).normalized;
-        LayerMask layerMask = ~LayerMask.GetMask("Enemies"); // Invert the layer mask to only ignore the enemies layer (seeing through enemies)
+        LayerMask layerMask = ~LayerMask.GetMask("Enemy"); // Invert the layer mask to only ignore the enemies layer (seeing through enemies)
         float distance = Vector3.Distance(originPoint, player.position);
 
         if (Physics.Raycast(originPoint, direction, out RaycastHit hit, distance, layerMask))
