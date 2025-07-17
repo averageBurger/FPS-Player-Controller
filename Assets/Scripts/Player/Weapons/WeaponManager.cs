@@ -36,7 +36,6 @@ public class WeaponManager : MonoBehaviour
     }
 
     private void InputManager_OnMeleeAttackButtonPressed(object sender, EventArgs e) {
-        Debug.Log("Melee Attack!");
         equippedMeleeWeapon.Attack(Vector3.forward);
     }
 
@@ -72,5 +71,21 @@ public class WeaponManager : MonoBehaviour
 
     public void CallOnAmmoChanged() {
         OnAmmoChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void UnequipRangedWeapon() {
+        equippedRangedWeapon = null;
+    }
+
+    public void EquipRangedWeapon(RangedWeapon newWeapon) {
+        if (equippedRangedWeapon == null) {
+            equippedRangedWeapon = newWeapon;
+        } else {
+            Debug.Log("Tried to equip a ranged weapon when there is already one equipped!");
+        }
+    }
+
+    public void ChangeMeleeWeapon(MeleeWeapon newWeapon) {
+        equippedMeleeWeapon = newWeapon;
     }
 }
