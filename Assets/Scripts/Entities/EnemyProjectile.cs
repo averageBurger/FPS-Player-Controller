@@ -6,7 +6,7 @@ public interface IProjectile
 }
 
 [RequireComponent(typeof(Rigidbody))]
-public abstract class Projectile : MonoBehaviour, IProjectile
+public abstract class EnemyProjectile : MonoBehaviour, IProjectile
 {
     [Header("Base Projectile Stats")]
     public virtual float ProjectileDamage { get; protected set; } = 40f;

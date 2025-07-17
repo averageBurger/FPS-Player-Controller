@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BasicProjectile : Projectile
+public class BasicProjectile : EnemyProjectile
 {
     // Unique to the projectile
     [Header("Projectile Stats")]
