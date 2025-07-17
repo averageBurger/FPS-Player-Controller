@@ -13,6 +13,8 @@ public class PlayerLogicManager : MonoBehaviour
     public bool isDead { get; private set; } = false;
 
     private void Awake() {
+        currentHealth = maxHealth;
+
         Instance = this;
     }
 

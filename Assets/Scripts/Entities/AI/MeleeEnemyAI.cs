@@ -69,7 +69,7 @@ public class MeleeEnemyAI : EnemyAI
         // Attack
         if (attackCooldownTimer <= 0f) 
         {
-            Debug.Log($"Enemy attacks for {enemy.AttackDamage} damage!");
+            PlayerLogicManager.Instance.TakeDamage(enemy.AttackDamage);
             // TODO: Trigger animation and deal damage to the player
 
             attackCooldownTimer = enemy.AttackCooldown;

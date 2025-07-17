@@ -7,5 +7,5 @@ using UnityEngine;
 public class MeleeExample : MeleeEnemy
 {
     public override float MaxHealth => 80f;
-    public override float AttackDamage => 25f;
+    public override float AttackDamage => 15f;
 }
