@@ -11,6 +11,7 @@ public class InputManager : MonoBehaviour
     public event EventHandler OnReloadButtonPressed;
 
     public event EventHandler OnJumpButtonPressed;
+    public event EventHandler OnDashPressed;
 
     private void Awake() {
         Instance = this;
@@ -23,6 +24,11 @@ public class InputManager : MonoBehaviour
         inputActions.Player.Reload.performed += Reload_performed;
 
         inputActions.Player.Jump.performed += Jump_performed;
+        inputActions.Player.Dash.performed += Dash_performed;
+    }
+
+    private void Dash_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
+        OnDashPressed?.Invoke(this, EventArgs.Empty);
     }
 
     private void Jump_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
@@ -41,11 +47,12 @@ public class InputManager : MonoBehaviour
         OnMeleeAttackButtonPressed?.Invoke(this, EventArgs.Empty);
     }
 
-    public Vector2 GetMovementVectorNormalised() {
+    public Vector3 GetMovementVectorNormalised() {
         Vector2 inputVector = inputActions.Player.Move.ReadValue<Vector2>();
         inputVector = inputVector.normalized;
+        Vector3 moveVector = new Vector3(inputVector.x, 0, inputVector.y);
 
-        return inputVector;
+        return moveVector;
     }
 
     public bool IsRangedAttackButtonHeld() {

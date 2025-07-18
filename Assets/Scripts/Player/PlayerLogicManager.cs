@@ -8,18 +8,21 @@ public class PlayerLogicManager : MonoBehaviour
     [SerializeField] private float currentHealth;
 
     [SerializeField] private float maxStamina;
-    private float currentStamina;
+    [SerializeField] private float currentStamina;
 
     public bool isDead { get; private set; } = false;
 
+    private bool isInvulnerable = false;
+
     private void Awake() {
         currentHealth = maxHealth;
+        currentStamina = maxStamina;
 
         Instance = this;
     }
 
     public void TakeDamage(float damageAmount) {
-        if (currentHealth == 0 || damageAmount < 1) {
+        if (currentHealth == 0 || damageAmount < 1 || isInvulnerable) {
             return;
         }
 
@@ -70,4 +73,6 @@ public class PlayerLogicManager : MonoBehaviour
     }
 
     public float GetCurrentStamina() { return currentStamina; }
+
+    public void SetInvulnerability(bool isInvuln) { isInvulnerable = isInvuln; }
 }

@@ -4933,6 +4933,7 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 0
   maxStamina: 100
+  currentStamina: 0
 --- !u!33 &4083728127348985927
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -5806,8 +5807,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
-  acceleratingForce: 10
   jumpStrength: 5
+  dashStaminaCost: 1
+  dashSpeed: 25
+  dashPeriod: 0.2
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
