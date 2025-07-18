@@ -19,18 +19,18 @@ public class RangedEnemyAI : EnemyAI
 
     void Update()
     {
-        // Failsafe incase the player does not exist
-        if (player == null)
+        // Failsafe incase the target does not exist
+        if (target == null)
         {
-            Debug.LogWarning("Target player has not been assigned to an enemy!");
+            Debug.LogWarning("Target has not been assigned to a ranged enemy!");
             return;
         }
 
-        bool canSeePlayer = CanSeePlayer();
+        bool canSeeTarget = CanSeeTarget();
 
-        if (canSeePlayer)
+        if (canSeeTarget)
         {
-            LookAtPlayer();
+            LookAtTarget();
             if (attackCooldownTimer <= 0f)
             {
                 FireProjectile();
@@ -66,10 +66,10 @@ public class RangedEnemyAI : EnemyAI
 
         if(projectileObject.TryGetComponent(out IProjectile projectile))
         {
-            // Assign the player as the target to fire at
-            projectile.SetTarget(player);
+            // Assign the target to fire at
+            projectile.SetTarget(target);
 
-            Vector3 direction = (player.position + Vector3.up - projectileObject.transform.position).normalized;
+            Vector3 direction = (target.position + Vector3.up - projectileObject.transform.position).normalized;
             projectile.Spawn(direction);
         }
         else

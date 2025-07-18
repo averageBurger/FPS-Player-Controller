@@ -7,37 +7,37 @@ public class EnemyAI : MonoBehaviour
 {
     public virtual float DetectionRange { get; protected set; } = 15f;
 
-    public Transform player;
+    public Transform target;
 
     // Cast a ray from the enemy's origin point defined to be their eye level, if the ray hits the player they have been seen -> return true
-    public bool CanSeePlayer()
+    public bool CanSeeTarget()
     {
         // Assumption that all enemies are of the same height, this is fine for now
         // Enemy's face is on the Z axis therefore we set the eyes on this axis
         Vector3 eyeOffset = transform.forward * 0.5f + Vector3.up * 1.5f;
         Vector3 originPoint = transform.position + eyeOffset;
 
-        Vector3 direction = (player.position - originPoint).normalized;
-        float distance = Vector3.Distance(originPoint, player.position);
+        Vector3 direction = (target.position - originPoint).normalized;
+        float distance = Vector3.Distance(originPoint, target.position);
 
         LayerMask layerMask = ~LayerMask.GetMask("Enemy"); // Invert the layer mask to only ignore the enemies layer (seeing through enemies)
 
         if (Physics.Raycast(originPoint, direction, out RaycastHit hit, distance, layerMask))
         {
-            return hit.transform == player;
+            return hit.transform == target;
         }
         // Player is not in view
         return false;
     }
 
-    public void LookAtPlayer()
+    public void LookAtTarget()
     {
         // Failsafe
-        if (player == null) { return; }
+        if (target == null) { return; }
 
         // Aligns the enemy's Z axis towards the player
         // This makes the enemy object's Z axis the face of the enemy
-        Vector3 direction = (player.position - transform.position).normalized;
+        Vector3 direction = (target.position - transform.position).normalized;
         direction.y = 0f;
 
         if (direction != Vector3.zero)

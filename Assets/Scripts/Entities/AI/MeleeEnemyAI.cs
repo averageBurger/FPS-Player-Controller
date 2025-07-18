@@ -20,22 +20,22 @@ public class MeleeEnemyAI : EnemyAI
     void Update()
     {
         // Failsafe incase the player does not exist
-        if (player == null)
+        if (target == null)
         {
-            Debug.LogWarning("Target player has not been assigned to an enemy!");
+            Debug.LogWarning("A target has not been assigned to a melee enemy!");
             return;
         }
 
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-        bool canSeePlayer = CanSeePlayer();
+        float distanceToTarget = Vector3.Distance(transform.position, target.position);
+        bool canSeeTarget = CanSeeTarget();
 
-        if (distanceToPlayer <= enemy.AttackRange && canSeePlayer) 
+        if (distanceToTarget <= enemy.AttackRange && canSeeTarget) 
         { 
-            AttackPlayer();
+            AttackTarget();
         }
-        else if (distanceToPlayer <= DetectionRange && canSeePlayer)
+        else if (distanceToTarget <= DetectionRange && canSeeTarget)
         {
-            FollowPlayer();
+            FollowTarget();
         }
         else
         {
@@ -50,26 +50,31 @@ public class MeleeEnemyAI : EnemyAI
     }
 
     // Uses the NavMesh to navigate to the player
-    private void FollowPlayer()
+    private void FollowTarget()
     {
-        LookAtPlayer();
+        LookAtTarget();
 
         navAgent.isStopped = false;
-        navAgent.SetDestination(player.position);
+        navAgent.SetDestination(target.position);
     }
 
-    private void AttackPlayer()
+    private void AttackTarget()
     {
         navAgent.isStopped = true;
 
-        LookAtPlayer();
+        LookAtTarget();
 
         if (attackCooldownTimer <= 0f) 
         {
-            PlayerLogicManager.Instance.TakeDamage(enemy.AttackDamage);
-            // TODO: Trigger animation
+            // Check if the target hit is assigned the PlayerLogicManager...
+            // ...if so, they must be a player so we can deal damage to them
+            // If we don't do this and the target is not a player, the player will still take damage
+            if (target.TryGetComponent(out PlayerLogicManager _))
+            {
+                PlayerLogicManager.Instance.TakeDamage(enemy.AttackDamage);
+            }
 
-            attackCooldownTimer = enemy.AttackCooldown;
+            attackCooldownTimer = enemy.AttackCooldown; 
         }
     }
 }
