@@ -64,10 +64,11 @@ public class RangedEnemyAI : EnemyAI
 
         GameObject projectileObject = Instantiate(enemy.ProjectileObject, spawnPosition, spawnRotation);
 
-        IProjectile projectile = projectileObject.GetComponent<IProjectile>();
-
-        if(projectile != null)
+        if(projectileObject.TryGetComponent(out IProjectile projectile))
         {
+            // Assign the player as the target to fire at
+            projectile.SetTarget(player);
+
             Vector3 direction = (player.position + Vector3.up - projectileObject.transform.position).normalized;
             projectile.Spawn(direction);
         }

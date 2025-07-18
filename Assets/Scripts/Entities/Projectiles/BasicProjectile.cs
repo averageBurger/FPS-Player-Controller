@@ -7,15 +7,17 @@ public class BasicProjectile : EnemyProjectile
     public override float ProjectileDamage => 25f;
     public override float ProjectileSpeed => 15f;
 
-    public Transform Player;
-
     private void OnCollisionEnter(Collision collision)
     {
-        // The projectile must be assigned the player object
-        // I'm not a fan of the way I have implemented this but it works for now...
-        if(collision.transform.root == Player) 
+        if(collision.transform.root == target) 
         {
-            PlayerLogicManager.Instance.TakeDamage(ProjectileDamage);
+            // Check if the target hit is assigned the PlayerLogicManager...
+            // ...if so, they must be a player so we can deal damage to them
+            // If we don't do this and the target is not a player, the player will still take damage
+            if (target.TryGetComponent(out PlayerLogicManager _))
+            {
+                PlayerLogicManager.Instance.TakeDamage(ProjectileDamage);
+            }
         }
 
         Destroy(gameObject);
