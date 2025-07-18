@@ -6,15 +6,14 @@ public class PlayerLogicManager : MonoBehaviour
 
     [SerializeField] private float maxHealth;
     [SerializeField] private float currentHealth;
-
     [SerializeField] private float maxStamina;
-    private float currentStamina;
+    [SerializeField] private float currentStamina;
 
     public bool isDead { get; private set; } = false;
 
     private void Awake() {
         currentHealth = maxHealth;
-
+        currentStamina = maxStamina;
         Instance = this;
     }
 
@@ -70,4 +69,14 @@ public class PlayerLogicManager : MonoBehaviour
     }
 
     public float GetCurrentStamina() { return currentStamina; }
+
+    public float GetMaxHealth()
+    {
+        return maxHealth;
+    }
+
+    public float GetMaxStamina()
+    {
+        return maxStamina;
+    }
 }
