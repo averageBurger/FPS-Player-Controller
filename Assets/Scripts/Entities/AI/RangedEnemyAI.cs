@@ -1,4 +1,3 @@
-using System.IO.Pipes;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -29,10 +28,14 @@ public class RangedEnemyAI : EnemyAI
 
         bool canSeePlayer = CanSeePlayer();
 
-        if (canSeePlayer && attackCooldownTimer <= 0f)
+        if (canSeePlayer)
         {
-            FireProjectile();
-            attackCooldownTimer = enemy.ReloadCooldown;
+            LookAtPlayer();
+            if (attackCooldownTimer <= 0f)
+            {
+                FireProjectile();
+                attackCooldownTimer = enemy.ReloadCooldown;
+            }
         }
 
         // TODO: Move enemy to a better position
@@ -70,7 +73,7 @@ public class RangedEnemyAI : EnemyAI
         }
         else
         {
-            Debug.LogWarning("Spawned projectile does not implement the IProjectile interface!");
+            Debug.LogWarning("Spawned projectile does not implement the IProjectile interface from the projectile class!");
         }
     }
 }

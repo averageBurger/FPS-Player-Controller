@@ -6,7 +6,6 @@ public class MeleeEnemyAI : EnemyAI
 {
     private NavMeshAgent navAgent;
     private MeleeEnemy enemy;
-    private EnemyAI enemyAI;
 
     private float attackCooldownTimer = 0f;
 
@@ -14,7 +13,6 @@ public class MeleeEnemyAI : EnemyAI
     {
         navAgent = GetComponent<NavMeshAgent>();
         enemy = GetComponent<MeleeEnemy>();
-        enemyAI = GetComponent<EnemyAI>();
 
         navAgent.speed = enemy.MovementSpeed;
     }
@@ -35,7 +33,7 @@ public class MeleeEnemyAI : EnemyAI
         { 
             AttackPlayer();
         }
-        else if (distanceToPlayer <= enemyAI.DetectionRange && canSeePlayer)
+        else if (distanceToPlayer <= DetectionRange && canSeePlayer)
         {
             FollowPlayer();
         }
@@ -54,6 +52,8 @@ public class MeleeEnemyAI : EnemyAI
     // Uses the NavMesh to navigate to the player
     private void FollowPlayer()
     {
+        LookAtPlayer();
+
         navAgent.isStopped = false;
         navAgent.SetDestination(player.position);
     }
@@ -62,15 +62,12 @@ public class MeleeEnemyAI : EnemyAI
     {
         navAgent.isStopped = true;
 
-        // TODO: Look at the player
-        Vector3 lookingDir = player.position - transform.position;
-        lookingDir.y = 0f;
+        LookAtPlayer();
 
-        // Attack
         if (attackCooldownTimer <= 0f) 
         {
             PlayerLogicManager.Instance.TakeDamage(enemy.AttackDamage);
-            // TODO: Trigger animation and deal damage to the player
+            // TODO: Trigger animation
 
             attackCooldownTimer = enemy.AttackCooldown;
         }

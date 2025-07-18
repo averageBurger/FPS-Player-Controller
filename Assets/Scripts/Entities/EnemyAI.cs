@@ -12,11 +12,15 @@ public class EnemyAI : MonoBehaviour
     // Cast a ray from the enemy's origin point defined to be their eye level, if the ray hits the player they have been seen -> return true
     public bool CanSeePlayer()
     {
-        Vector3 originPoint = transform.position + Vector3.up * 1.5f;
         // Assumption that all enemies are of the same height, this is fine for now
+        // Enemy's face is on the Z axis therefore we set the eyes on this axis
+        Vector3 eyeOffset = transform.forward * 0.5f + Vector3.up * 1.5f;
+        Vector3 originPoint = transform.position + eyeOffset;
+
         Vector3 direction = (player.position - originPoint).normalized;
-        LayerMask layerMask = ~LayerMask.GetMask("Enemy"); // Invert the layer mask to only ignore the enemies layer (seeing through enemies)
         float distance = Vector3.Distance(originPoint, player.position);
+
+        LayerMask layerMask = ~LayerMask.GetMask("Enemy"); // Invert the layer mask to only ignore the enemies layer (seeing through enemies)
 
         if (Physics.Raycast(originPoint, direction, out RaycastHit hit, distance, layerMask))
         {
@@ -24,5 +28,22 @@ public class EnemyAI : MonoBehaviour
         }
         // Player is not in view
         return false;
+    }
+
+    public void LookAtPlayer()
+    {
+        // Failsafe
+        if (player == null) { return; }
+
+        // Aligns the enemy's Z axis towards the player
+        // This makes the enemy object's Z axis the face of the enemy
+        Vector3 direction = (player.position - transform.position).normalized;
+        direction.y = 0f;
+
+        if (direction != Vector3.zero)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10f);
+        }
     }
 }

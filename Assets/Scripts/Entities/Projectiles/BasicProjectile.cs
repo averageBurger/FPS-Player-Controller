@@ -11,8 +11,8 @@ public class BasicProjectile : EnemyProjectile
 
     private void OnCollisionEnter(Collision collision)
     {
-        // Temporary solution until the player is coded
-        // This is not a good way of doing this >:(
+        // The projectile must be assigned the player object
+        // I'm not a fan of the way I have implemented this but it works for now...
         if(collision.transform.root == Player) 
         {
             PlayerLogicManager.Instance.TakeDamage(ProjectileDamage);

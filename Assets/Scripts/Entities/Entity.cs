@@ -1,7 +1,8 @@
 using UnityEngine;
 
 // Contains the base functionality of an entity
-// Typically used and expanded upon by melee and ranged enemies
+// Typically used and expanded upon by enemies
+// Can be used for any "living" object
 public class Entity : MonoBehaviour
 {
     [Header("Base Entity Stats")]
@@ -28,17 +29,15 @@ public class Entity : MonoBehaviour
         }
     }
 
-    protected virtual void OnHit()
-    {
-        // On enemy being hit related functionality
-    }
+    public float GetHealth() { return Health; }
 
-    protected virtual void OnSpawn()
-    {
-        // On enemy spawning in related functionality
-    }
+    public float GetMovementSpeed() { return MovementSpeed; }
 
-    protected virtual void Kill()
+    public void SetHealth(float value) { Health = value; }
+
+    public void SetMovementSpeed(float value) { MovementSpeed = value; }
+
+    public virtual void Kill()
     {
         if (isDead) return;
         isDead = true;
@@ -47,5 +46,16 @@ public class Entity : MonoBehaviour
 
         // Trigger death animation
         Destroy(gameObject);
+    }
+
+    // Can be made if needed at any point
+    protected virtual void OnHit()
+    {
+        // TODO: On enemy being hit related functionality
+    }
+
+    protected virtual void OnSpawn()
+    {
+        // TODO: On enemy spawning in related functionality
     }
 }
