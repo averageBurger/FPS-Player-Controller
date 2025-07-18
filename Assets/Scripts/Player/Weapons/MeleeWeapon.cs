@@ -20,7 +20,6 @@ public abstract class MeleeWeapon : MonoBehaviour
         if (!canAttack) {
             return;
         }
-        Debug.Log("can attack.");
 
         if (cooldown != 0) {
             StartCoroutine(StartAttackCooldown());
@@ -35,7 +34,6 @@ public abstract class MeleeWeapon : MonoBehaviour
             Debug.Log(hit.transform.gameObject.name);
             int layer = hit.transform.gameObject.layer;
             if (WeaponManager.Instance.HasHitEnemy(layer) && !IsBehindObstacle(hit)) {
-                Debug.Log("hit enemy!");
                 HitEnemyEffect(hit.transform.gameObject);
             } else if (WeaponManager.Instance.HasHitObstacle(layer)) {
                 Debug.Log("hit obstacle!");
