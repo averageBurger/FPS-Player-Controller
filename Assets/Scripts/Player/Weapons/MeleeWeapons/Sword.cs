@@ -1,7 +1,8 @@
 using UnityEngine;
 
 public class Sword : MeleeWeapon {
-    protected override void HitEnemyEffect(RaycastHit hit) {
-        hit.transform.gameObject.GetComponent<Entity>().TakeDamage(damage);
+    protected override void HitEnemyEffect(GameObject gameObjectHit) {
+        gameObjectHit.GetComponent<Entity>().TakeDamage(damage);
+        Debug.Log("Deal Damage! : " + damage);
     }
 }

@@ -5,7 +5,7 @@ public class PlayerLogicManager : MonoBehaviour
     public static PlayerLogicManager Instance { get; private set; }
 
     [SerializeField] private float maxHealth;
-    public float currentHealth;
+    [SerializeField] private float currentHealth;
 
     [SerializeField] private float maxStamina;
     private float currentStamina;

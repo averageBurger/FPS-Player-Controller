@@ -16,7 +16,6 @@ public class WeaponManager : MonoBehaviour
     [SerializeField] private LayerMask weaponInteractableLayerMask;
     [SerializeField] private LayerMask obstacleLayer;
     [SerializeField] private LayerMask enemyLayer;
-    [SerializeField] private LayerMask enemyWeakpointLayer;
 
     [Header("References")]
     [SerializeField] private Transform bulletSpawnPointTransform;
@@ -58,11 +57,7 @@ public class WeaponManager : MonoBehaviour
     }
 
     public bool HasHitEnemy(int layerHit) {
-        return 1 == enemyLayer.value >> layerHit || HasHitEnemyWeakpoint(layerHit);
-    }
-
-    public bool HasHitEnemyWeakpoint(int layerHit) {
-        return 1 == enemyWeakpointLayer.value >> layerHit;
+        return 1 == enemyLayer.value >> layerHit;
     }
 
     public Vector3 GetBulletSpawnPoint() { return bulletSpawnPointTransform.position; }

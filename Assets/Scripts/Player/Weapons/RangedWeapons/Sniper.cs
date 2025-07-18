@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class Sniper : HitscanWeapon
 {
-    protected override void HitEnemyEffect(bool hitWeakpoint) {
+    protected override void HitEnemyEffect(GameObject gameObjectHit, bool hitWeakpoint) {
         float damageDealt = damage;
         if (hitWeakpoint) {
             damageDealt = damage * weakpointMultiplier;
         }
 
-        //raycastHit.transform.GetComponent<???>().TakeDamage(damageDealt);
+        gameObjectHit.GetComponent<Entity>().TakeDamage(damageDealt);
         Debug.Log("Deal Damage! : " + damageDealt);
     }
 }

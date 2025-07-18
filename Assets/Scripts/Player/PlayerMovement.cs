@@ -16,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (context.performed)
         {
-            Debug.Log(context.phase);
+            //Debug.Log(context.phase);
             rb.AddForce(Vector3.up * 5f, ForceMode.Impulse);
         }
     }
@@ -25,7 +25,7 @@ public class PlayerMovement : MonoBehaviour
     public void Move(InputAction.CallbackContext context)
     {
         inputVector =  context.ReadValue<Vector2>();
-        Debug.Log(inputVector);
+        //Debug.Log(inputVector);
     }
 
     // Applies the force into the direction decided by the input

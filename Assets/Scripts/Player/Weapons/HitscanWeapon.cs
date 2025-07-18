@@ -12,13 +12,13 @@ public abstract class HitscanWeapon : RangedWeapon
         }
         int layer = raycastHit.transform.gameObject.layer;
         if (WeaponManager.Instance.HasHitObstacle(layer)) {
-            HitObstacleEffect();
+            HitObstacleEffect(raycastHit.transform.gameObject);
         } else if (WeaponManager.Instance.HasHitEnemy(layer)) {
-            HitEnemyEffect(WeaponManager.Instance.HasHitEnemyWeakpoint(layer));
+            HitEnemyEffect(raycastHit.transform.gameObject, false);
         }
         return true;
     }
 
-    protected abstract void HitEnemyEffect(bool hitWeakpoint);
-    protected virtual void HitObstacleEffect() { }
+    protected abstract void HitEnemyEffect(GameObject gameObjectHit, bool hitWeakpoint);
+    protected virtual void HitObstacleEffect(GameObject gameObjectHit) { }
 }

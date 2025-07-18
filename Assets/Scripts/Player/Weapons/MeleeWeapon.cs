@@ -36,10 +36,10 @@ public abstract class MeleeWeapon : MonoBehaviour
             int layer = hit.transform.gameObject.layer;
             if (WeaponManager.Instance.HasHitEnemy(layer) && !IsBehindObstacle(hit)) {
                 Debug.Log("hit enemy!");
-                HitEnemyEffect(hit);
+                HitEnemyEffect(hit.transform.gameObject);
             } else if (WeaponManager.Instance.HasHitObstacle(layer)) {
                 Debug.Log("hit obstacle!");
-                HitObstacleEffect(hit);
+                HitObstacleEffect(hit.transform.gameObject);
             }
         }
 
@@ -61,6 +61,6 @@ public abstract class MeleeWeapon : MonoBehaviour
         canAttack = true;
     }
 
-    protected abstract void HitEnemyEffect(RaycastHit hit);
-    protected virtual void HitObstacleEffect(RaycastHit hit) { }
+    protected abstract void HitEnemyEffect(GameObject gameObjectHit);
+    protected virtual void HitObstacleEffect(GameObject GameObjecthit) { }
 }
