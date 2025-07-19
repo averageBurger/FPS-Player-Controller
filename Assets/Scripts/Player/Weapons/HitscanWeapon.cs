@@ -2,12 +2,12 @@ using UnityEngine;
 
 public abstract class HitscanWeapon : RangedWeapon
 {
-    public override bool Shoot(Vector3 direction) {
-        if (!base.Shoot(direction)) {
+    public override bool Shoot() {
+        if (!base.Shoot()) {
             return false;
         }
 
-        if (!Physics.Raycast(WeaponManager.Instance.GetBulletSpawnPoint(), direction, out RaycastHit raycastHit, range, WeaponManager.Instance.GetWeaponInteractableLayerMask())) {
+        if (!Physics.Raycast(WeaponManager.Instance.GetBulletSpawnPoint(), WeaponManager.Instance.GetLookingVector3(), out RaycastHit raycastHit, range, WeaponManager.Instance.GetWeaponInteractableLayerMask())) {
             return true;
         }
         int layer = raycastHit.transform.gameObject.layer;

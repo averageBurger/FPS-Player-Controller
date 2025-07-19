@@ -10,15 +10,15 @@ public abstract class ProjectileWeapon : RangedWeapon
     [SerializeField] private GameObject projectileGameObject;
 
 
-    public override bool Shoot(Vector3 direction) {
-        if (!base.Shoot(direction)) {
+    public override bool Shoot() {
+        if (!base.Shoot()) {
             return false;
         }
 
         GameObject newProjectileGO = Instantiate(projectileGameObject, projectileSpawnPointTransform.position, Quaternion.identity);
         Projectile newProjectile = newProjectileGO.GetComponent<Projectile>();
         Debug.Log("initialise!");
-        newProjectile.Initialise(this, direction, projectileSpeed);
+        newProjectile.Initialise(this, WeaponManager.Instance.GetLookingVector3(), projectileSpeed);
 
         return true;
     }

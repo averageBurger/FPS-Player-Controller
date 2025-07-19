@@ -16,7 +16,7 @@ public abstract class MeleeWeapon : MonoBehaviour
 
     private bool canAttack = true;
 
-    public void Attack(Vector3 direction) {
+    public void Attack() {
         if (!canAttack) {
             return;
         }
@@ -28,7 +28,7 @@ public abstract class MeleeWeapon : MonoBehaviour
 
         Vector3 spawn = WeaponManager.Instance.GetMeleeAttackShapeSpawnPoint();
         Vector3 halfExtents = new Vector3(attackShapeWidth / 2f, attackShapeHeight / 2f, 0.05f);
-        RaycastHit[] raycastHitArray = Physics.BoxCastAll(spawn, halfExtents, direction, Quaternion.identity, weaponReach, WeaponManager.Instance.GetWeaponInteractableLayerMask());
+        RaycastHit[] raycastHitArray = Physics.BoxCastAll(spawn, halfExtents, WeaponManager.Instance.GetLookingVector3(), Quaternion.identity, weaponReach, WeaponManager.Instance.GetWeaponInteractableLayerMask());
 
         foreach (RaycastHit hit in raycastHitArray) {
             Debug.Log(hit.transform.gameObject.name);

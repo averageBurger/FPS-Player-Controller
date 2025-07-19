@@ -35,13 +35,13 @@ public abstract class RangedWeapon : MonoBehaviour
         ammoInMagazine = magazineSize;
     }
 
-    public virtual bool Shoot(Vector3 direction) {
+    public virtual bool Shoot() {
         if (ammoInMagazine == 0 || reloading || !canShoot) {
             return false;
         }
 
         if (fireRate != 0) {
-            StartCoroutine(FireRateLimiter(direction));
+            StartCoroutine(FireRateLimiter());
         }
         OnRangedWeaponShot?.Invoke(this, EventArgs.Empty);
 
@@ -54,12 +54,12 @@ public abstract class RangedWeapon : MonoBehaviour
     }
 
     // will need to change dir to match where player is now looking
-    private IEnumerator FireRateLimiter(Vector3 dir) {
+    private IEnumerator FireRateLimiter() {
         canShoot = false;
         yield return new WaitForSeconds(1 / fireRate);
         canShoot = true;
         if (fireType == WeaponFireType.Automatic && InputManager.Instance.IsRangedAttackButtonHeld()) {
-            Shoot(dir);
+            Shoot();
         }
     }
 

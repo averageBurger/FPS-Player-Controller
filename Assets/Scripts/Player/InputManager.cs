@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour
@@ -47,12 +48,19 @@ public class InputManager : MonoBehaviour
         OnMeleeAttackButtonPressed?.Invoke(this, EventArgs.Empty);
     }
 
-    public Vector3 GetMovementVectorNormalised() {
+    public Vector3 GetMovementVector3Normalised() {
         Vector2 inputVector = inputActions.Player.Move.ReadValue<Vector2>();
         inputVector = inputVector.normalized;
         Vector3 moveVector = new Vector3(inputVector.x, 0, inputVector.y);
 
         return moveVector;
+    }
+
+    public Vector2 GetLookRotationVector2Normalised() {
+        Vector2 inputVector = inputActions.Player.Look.ReadValue<Vector2>();
+        inputVector = inputVector.normalized;
+
+        return inputVector;
     }
 
     public bool IsRangedAttackButtonHeld() {
