@@ -13,6 +13,8 @@ public class InputManager : MonoBehaviour
 
     public event EventHandler OnJumpButtonPressed;
     public event EventHandler OnDashPressed;
+    public event EventHandler OnSlidePressed;
+    public event EventHandler OnSlideReleased;
 
     private void Awake() {
         Instance = this;
@@ -26,6 +28,16 @@ public class InputManager : MonoBehaviour
 
         inputActions.Player.Jump.performed += Jump_performed;
         inputActions.Player.Dash.performed += Dash_performed;
+        inputActions.Player.Slide.performed += Slide_performed;
+        inputActions.Player.Slide.canceled += Slide_canceled;
+    }
+
+    private void Slide_canceled(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
+        OnSlideReleased?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void Slide_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
+        OnSlidePressed?.Invoke(this, EventArgs.Empty);
     }
 
     private void Dash_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj) {
@@ -65,5 +77,9 @@ public class InputManager : MonoBehaviour
 
     public bool IsRangedAttackButtonHeld() {
         return inputActions.Player.RangedAttack.IsPressed();
+    }
+
+    public bool IsSlideButtonHeld() {
+        return inputActions.Player.Slide.IsPressed();
     }
 }
