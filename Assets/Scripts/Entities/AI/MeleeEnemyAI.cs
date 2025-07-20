@@ -9,17 +9,17 @@ public class MeleeEnemyAI : EnemyAI
 
     private float attackCooldownTimer = 0f;
 
-    void Start()
+    new void Start()
     {
         navAgent = GetComponent<NavMeshAgent>();
         enemy = GetComponent<MeleeEnemy>();
 
-        navAgent.speed = enemy.MovementSpeed;
+        navAgent.speed = enemy.GetMovementSpeed();
     }
 
-    void Update()
+    new void Update()
     {
-        // Failsafe incase the player does not exist
+        // Failsafe incase the target does not exist
         if (target == null)
         {
             Debug.LogWarning("A target has not been assigned to a melee enemy!");
@@ -29,17 +29,17 @@ public class MeleeEnemyAI : EnemyAI
         float distanceToTarget = Vector3.Distance(transform.position, target.position);
         bool canSeeTarget = CanSeeTarget();
 
-        if (distanceToTarget <= enemy.AttackRange && canSeeTarget) 
+        if (distanceToTarget <= enemy.GetAttackRange() && canSeeTarget) 
         { 
             AttackTarget();
         }
-        else if (distanceToTarget <= DetectionRange && canSeeTarget)
+        else if (distanceToTarget <= GetDetectionRange() && canSeeTarget)
         {
             FollowTarget();
         }
         else
         {
-            // If the player is not in range/not visible we stop moving
+            // If the target is not in range/not visible we stop moving
             navAgent.isStopped = true;
         }
 
@@ -49,7 +49,7 @@ public class MeleeEnemyAI : EnemyAI
         }
     }
 
-    // Uses the NavMesh to navigate to the player
+    // Uses the NavMesh to navigate to the target
     private void FollowTarget()
     {
         LookAtTarget();
@@ -71,10 +71,10 @@ public class MeleeEnemyAI : EnemyAI
             // If we don't do this and the target is not a player, the player will still take damage
             if (target.TryGetComponent(out PlayerLogicManager _))
             {
-                PlayerLogicManager.Instance.TakeDamage(enemy.AttackDamage);
+                PlayerLogicManager.Instance.TakeDamage(enemy.GetAttackDamage());
             }
 
-            attackCooldownTimer = enemy.AttackCooldown; 
+            attackCooldownTimer = enemy.GetAttackCooldown(); 
         }
     }
 }

@@ -9,15 +9,15 @@ public class RangedEnemyAI : EnemyAI
 
     private float attackCooldownTimer = 0f;
 
-    void Start()
+    new void Start()
     {
         navAgent = GetComponent<NavMeshAgent>();
         enemy = GetComponent<RangedEnemy>();
 
-        navAgent.speed = enemy.MovementSpeed;
+        navAgent.speed = enemy.GetMovementSpeed();
     }
 
-    void Update()
+    new void Update()
     {
         // Failsafe incase the target does not exist
         if (target == null)
@@ -34,7 +34,7 @@ public class RangedEnemyAI : EnemyAI
             if (attackCooldownTimer <= 0f)
             {
                 FireProjectile();
-                attackCooldownTimer = enemy.ReloadCooldown;
+                attackCooldownTimer = enemy.GetReloadCooldown();
             }
         }
 
@@ -49,20 +49,20 @@ public class RangedEnemyAI : EnemyAI
     private void FireProjectile()
     {
         // Failsafe
-        if (enemy.ProjectileObject == null || enemy.ProjectileFirePoint == null)
+        if (enemy.GetProjectileObject() == null || enemy.GetProjectileFirePoint() == null)
         {
             Debug.LogWarning("No projectile object or fire point has been assigned to a ranged enemy!");
             return;
         }
 
-        Transform firePoint = enemy.ProjectileFirePoint;
+        Transform firePoint = enemy.GetProjectileFirePoint();
         Vector3 fireDirection = firePoint.forward.normalized;
         float spawnOffsetDistance = 0.5f;
 
         Vector3 spawnPosition = firePoint.position + fireDirection * spawnOffsetDistance;
         Quaternion spawnRotation = Quaternion.LookRotation(fireDirection);
 
-        GameObject projectileObject = Instantiate(enemy.ProjectileObject, spawnPosition, spawnRotation);
+        GameObject projectileObject = Instantiate(enemy.GetProjectileObject(), spawnPosition, spawnRotation);
 
         if(projectileObject.TryGetComponent(out IProjectile projectile))
         {
