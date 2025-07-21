@@ -1,13 +1,18 @@
 using System;
-using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
-
-// I have: added a stamina cost to slide, improved slide speed scaling with angle. Made sliding start/continue if you land from mid air while holding ctrl. Can now jump out of a slide, and jump during a slide if you look in the right direction. Made it so you need to hold w to start a slide, and for the momentum boost part. Added a small cooldown to slide. Made slide change hitbox and lower camera. Automatically exit slide if you run out of momentum or stamina.
-// let player move on edges
-// fast fall if press slide mid air
 
 public class PlayerMovement2 : MonoBehaviour
 {
+    // wall jump goes up
+    // remove slide cooldown
+    // slide automatic get up leaves until you slow down more
+    // stamina come back
+    // stop dash while sliding, or slide while dash. also can stop slide if jump in air
+
+    // you're dead
+    // test weapons shooting enemies
+
     private Rigidbody rb;
     private InputManager inputM;
 
@@ -19,7 +24,9 @@ public class PlayerMovement2 : MonoBehaviour
 
     [Header("Jumping")]
     [SerializeField] private float jumpStrength;
-    [SerializeField] private float wallJumpStrength;
+    [SerializeField] private float wallJumpSideStrength;
+    [SerializeField] private float wallJumpUpStrength;
+    [SerializeField] private float specialJumpStaminaCost;
 
     [Header("Dash")]
     [SerializeField] private float dashStaminaCost;
@@ -29,13 +36,11 @@ public class PlayerMovement2 : MonoBehaviour
     private float dashAcceleratingForce = 100f;
     private float dashDecceleratingForce = 60f;
 
-
     [Header("Sliding")]
     [SerializeField] private float slideStaminaDrainRate;
     [SerializeField] private float slideStartSpeed;
     [SerializeField] private float slideStartPeriod;
     [SerializeField] private float slideFadePeriod;
-    [SerializeField] private float slideCooldown;
     private float slideMinimumAngle = 5;
     private float slideAcceleratingForce = 50f;
     private float slideDownMaxForce = 30f;
@@ -70,7 +75,6 @@ public class PlayerMovement2 : MonoBehaviour
     private Vector3 slideStartDirection;
     private Vector3 slideSlopeDownDirection;
     private bool sliding = false;
-    private bool slideOnCooldown = false;
 
     public event EventHandler OnSlideStart;
     public event EventHandler OnSlideEnd;
@@ -99,6 +103,10 @@ public class PlayerMovement2 : MonoBehaviour
     }
 
     private void FixedUpdate() {
+        if (PlayerLogicManager.Instance.IsDead()) {
+            return;
+        }
+
         if (dashing) {
             HandleDash();
             dashTimer += Time.fixedDeltaTime;
@@ -120,7 +128,7 @@ public class PlayerMovement2 : MonoBehaviour
                 slideTimer += Time.fixedDeltaTime;
                 HandleSlideStart();
                 slid = true;
-            } else if (surfaceAngle < slideMinimumAngle) {
+            } else if (surfaceAngle < slideMinimumAngle && (!inputM.IsWButtonHeld() || rb.linearVelocity.magnitude < speed) ) {
                 FinishSliding();
             }
 
@@ -195,25 +203,23 @@ public class PlayerMovement2 : MonoBehaviour
 
 
 
-    private void InputManager_OnJumpButtonPressed(object sender, System.EventArgs e) {
+    private void InputManager_OnJumpButtonPressed(object sender, EventArgs e) {
         if (dashing) {
             return;
         }
 
         int maxAirJumps = 1;
         if (isOnGround) {
-            if (sliding) {
-                bool lookingInSlideDirection = VectorsAreSimiliar(rb.linearVelocity, GetLookingVector3(), 30);
-                bool moveInputIntoSlide = inputM.IsWButtonHeld() || inputM.GetMovementVector3Normalised() == Vector3.zero;
-
-                if (!(lookingInSlideDirection && moveInputIntoSlide)) {
-                    FinishSliding();
-                }
+            if (ShouldCancelSlide()) {
+                FinishSliding();
             }
             Jump();
         } else if (isOnWall) {
             WallJump();
         } else if (airJumpCounter < maxAirJumps) {
+            if (ShouldCancelSlide()) {
+                FinishSliding();
+            }
             AirJump();
         }
     }
@@ -223,20 +229,32 @@ public class PlayerMovement2 : MonoBehaviour
     }
 
     private void WallJump() {
+        if (PlayerLogicManager.Instance.GetCurrentStamina() < specialJumpStaminaCost) {
+            return;
+        }
+
+        PlayerLogicManager.Instance.DrainStamina(specialJumpStaminaCost);
         if (rb.linearVelocity.y < 0) {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
         }
 
-        rb.AddForce(wallNormal * wallJumpStrength, ForceMode.Impulse);
+        Vector3 wallJumpForce = wallNormal * wallJumpSideStrength + Vector3.up * wallJumpUpStrength;
+        rb.AddForce(wallJumpForce, ForceMode.Impulse);
     }
 
 
     private void AirJump() {
+        if (PlayerLogicManager.Instance.GetCurrentStamina() < specialJumpStaminaCost) {
+            return;
+        }
+
+        PlayerLogicManager.Instance.DrainStamina(specialJumpStaminaCost);
         airJumpCounter++;
-        Vector3 forceVector = Vector3.up * jumpStrength;
         if (rb.linearVelocity.y < 0) {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
         }
+
+        Vector3 forceVector = Vector3.up * jumpStrength;
         rb.AddForce(forceVector, ForceMode.Impulse);
     }
 
@@ -270,7 +288,7 @@ public class PlayerMovement2 : MonoBehaviour
     }
 
     private void BeginDash() {
-        if (!dashing && PlayerLogicManager.Instance.GetCurrentStamina() >= dashStaminaCost) {
+        if (!dashing && !sliding && PlayerLogicManager.Instance.GetCurrentStamina() >= dashStaminaCost) {
             PlayerLogicManager.Instance.DrainStamina(dashStaminaCost);
             PlayerLogicManager.Instance.SetInvulnerability(true);
             dashing = true;
@@ -321,8 +339,18 @@ public class PlayerMovement2 : MonoBehaviour
         BeginSliding(time);
     }
 
+    private bool ShouldCancelSlide() {
+        if (sliding) {
+            bool lookingInSlideDirection = VectorsAreSimiliar(rb.linearVelocity, GetLookingVector3(), 30);
+            bool moveInputIntoSlide = inputM.IsWButtonHeld() || inputM.GetMovementVector3Normalised() == Vector3.zero;
+
+            return !(lookingInSlideDirection && moveInputIntoSlide);
+        }
+        return false;
+    }
+
     private void BeginSliding(float timerStart) {
-        if (!slideOnCooldown && isOnGround && inputM.GetMovementVector3Normalised() == Vector3.forward && PlayerLogicManager.Instance.GetCurrentStamina() >= slideStaminaDrainRate) {
+        if (isOnGround && !dashing && inputM.GetMovementVector3Normalised() == Vector3.forward && PlayerLogicManager.Instance.GetCurrentStamina() >= slideStaminaDrainRate) {
             slideTimer = timerStart;
             slideStartDirection = GetParallelToSurfaceNormalised(GetLookingVector3(), surfaceNormal);
             sliding = true;
@@ -357,13 +385,6 @@ public class PlayerMovement2 : MonoBehaviour
         slideCollider.enabled = false;
         mainCollider.enabled = true;
         OnSlideEnd?.Invoke(this, new EventArgs());
-        slideOnCooldown = true;
-        StartCoroutine(SlideCooldownTimer());
-    }
-
-    private IEnumerator SlideCooldownTimer() {
-        yield return new WaitForSeconds(slideCooldown);
-        slideOnCooldown = false;
     }
 
     private void CheckSurfaceAngle() {
@@ -467,5 +488,13 @@ public class PlayerMovement2 : MonoBehaviour
 
     public Vector3 GetSlideStartDirection() {
         return slideStartDirection;
+    }
+
+    public bool IsSliding() {
+        return sliding;
+    }
+
+    public bool IsDashing() {
+        return dashing;
     }
 }

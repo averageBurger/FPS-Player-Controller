@@ -4713,7 +4713,7 @@ MonoBehaviour:
   equippedMeleeWeapon: {fileID: 4697988642150980878}
   weaponInteractableLayerMask:
     serializedVersion: 2
-    m_Bits: 448
+    m_Bits: 192
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -5185,6 +5185,7 @@ MonoBehaviour:
   currentHealth: 0
   maxStamina: 100
   currentStamina: 0
+  staminaRegenRate: 2
 --- !u!4 &4549087752704578194
 Transform:
   m_ObjectHideFlags: 0
@@ -5645,19 +5646,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a8258e3081fe2a4f93121cabdc8a9d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 8
+  speed: 9
   wallFallSlowStrength: 17
   fastFallStrength: 50
-  jumpStrength: 10
-  wallJumpStrength: 18
+  jumpStrength: 8
+  wallJumpSideStrength: 22
+  wallJumpUpStrength: 14
+  specialJumpStaminaCost: 5
   dashStaminaCost: 10
   dashSpeed: 50
   dashPeriod: 0.2
-  slideStaminaDrainRate: 3
+  slideStaminaDrainRate: 5
   slideStartSpeed: 12
   slideStartPeriod: 0.75
   slideFadePeriod: 0.5
-  slideCooldown: 1.5
   surfaceLayerMask:
     serializedVersion: 2
     m_Bits: 87

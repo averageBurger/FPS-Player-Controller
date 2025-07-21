@@ -31,12 +31,10 @@ public abstract class MeleeWeapon : MonoBehaviour
         RaycastHit[] raycastHitArray = Physics.BoxCastAll(spawn, halfExtents, WeaponManager.Instance.GetLookingVector3(), Quaternion.identity, weaponReach, WeaponManager.Instance.GetWeaponInteractableLayerMask());
 
         foreach (RaycastHit hit in raycastHitArray) {
-            Debug.Log(hit.transform.gameObject.name);
             int layer = hit.transform.gameObject.layer;
             if (WeaponManager.Instance.HasHitEnemy(layer) && !IsBehindObstacle(hit)) {
                 HitEnemyEffect(hit.transform.gameObject);
             } else if (WeaponManager.Instance.HasHitObstacle(layer)) {
-                Debug.Log("hit obstacle!");
                 HitObstacleEffect(hit.transform.gameObject);
             }
         }

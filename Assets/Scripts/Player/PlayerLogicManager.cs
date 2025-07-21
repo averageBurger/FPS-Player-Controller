@@ -10,6 +10,8 @@ public class PlayerLogicManager : MonoBehaviour
     [SerializeField] private float maxStamina;
     [SerializeField] private float currentStamina;
 
+    [SerializeField] private float staminaRegenRate;
+
     public bool isDead { get; private set; } = false;
 
     private bool isInvulnerable = false;
@@ -19,6 +21,20 @@ public class PlayerLogicManager : MonoBehaviour
         currentStamina = maxStamina;
 
         Instance = this;
+    }
+
+    private void Update() {
+        PlayerMovement2 playerMovement = GetComponent<PlayerMovement2>();
+
+        if (!playerMovement.IsSliding() && !playerMovement.IsDashing()) {
+            RegenerateStamina();
+        }
+    }
+
+    private void RegenerateStamina() {
+        if (currentStamina < maxStamina) {
+            GainStamina(staminaRegenRate * Time.deltaTime);
+        }
     }
 
     public void TakeDamage(float damageAmount) {
@@ -75,4 +91,6 @@ public class PlayerLogicManager : MonoBehaviour
     public float GetCurrentStamina() { return currentStamina; }
 
     public void SetInvulnerability(bool isInvuln) { isInvulnerable = isInvuln; }
+
+    public bool IsDead(){ return isDead; }
 }
