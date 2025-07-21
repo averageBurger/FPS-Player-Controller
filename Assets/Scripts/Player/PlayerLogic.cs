@@ -7,9 +7,9 @@ public class PlayerLogic : MonoBehaviour, IStatusAffectable
     public static PlayerLogic Instance { get; private set; }
 
     [SerializeField] private float maxHealth;
-    [SerializeField] private float currentHealth;
+    private float currentHealth;
     [SerializeField] private float maxStamina;
-    [SerializeField] private float currentStamina;
+    private float currentStamina;
 
     [SerializeField] private float staminaRegenRate;
 
