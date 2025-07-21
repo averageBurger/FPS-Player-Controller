@@ -10,9 +10,13 @@ public class PlayerLogicManager : MonoBehaviour, IStatusAffectable
     [SerializeField] private float maxStamina;
     [SerializeField] private float currentStamina;
 
+    [SerializeField] private float staminaRegenRate;
+
     private StatusEffectHandler effectHandler;
 
     public bool isDead { get; private set; } = false;
+
+    private bool isInvulnerable = false;
 
     private void Awake() {
         currentHealth = maxHealth;
@@ -24,7 +28,7 @@ public class PlayerLogicManager : MonoBehaviour, IStatusAffectable
     }
 
     public void TakeDamage(float damageAmount) {
-        if (currentHealth == 0 || damageAmount < 1) {
+        if (currentHealth == 0 || damageAmount <= 0 || isInvulnerable) {
             return;
         }
 
@@ -35,6 +39,14 @@ public class PlayerLogicManager : MonoBehaviour, IStatusAffectable
         }
     }
 
+    private void Update() {
+        PlayerMovement2 playerMovement = GetComponent<PlayerMovement2>();
+
+        if (!playerMovement.IsSliding() && !playerMovement.IsDashing()) {
+            RegenerateStamina();
+        }
+    }
+
     // For status effects
     void IStatusAffectable.TakeDamage(float amount)
     {
@@ -42,7 +54,7 @@ public class PlayerLogicManager : MonoBehaviour, IStatusAffectable
     }
 
     public void HealDamage(float healAmount) {
-        if (currentHealth == maxHealth || healAmount < 1) {
+        if (currentHealth == maxHealth || healAmount <= 0) {
             return;
         }
 
@@ -60,6 +72,12 @@ public class PlayerLogicManager : MonoBehaviour, IStatusAffectable
         effectHandler.ApplyStatusEffect(effect);
     }
 
+    private void RegenerateStamina() {
+        if (currentStamina < maxStamina) {
+            GainStamina(staminaRegenRate * Time.deltaTime);
+        }
+    }
+
     public bool HasEffect<E>() where E : StatusEffect
     {
         return effectHandler.HasEffect<E>();
@@ -74,7 +92,7 @@ public class PlayerLogicManager : MonoBehaviour, IStatusAffectable
 
 
     public void DrainStamina(float drainAmount) {
-        if (currentStamina == 0 || drainAmount < 1) {
+        if (currentStamina == 0 || drainAmount <= 0) {
             return;
         }
 
@@ -85,7 +103,7 @@ public class PlayerLogicManager : MonoBehaviour, IStatusAffectable
     }
 
     public void GainStamina(float gainAmount) {
-        if (currentStamina == maxStamina || gainAmount < 1) {
+        if (currentStamina == maxStamina || gainAmount <= 0) {
             return;
         }
 
@@ -106,4 +124,8 @@ public class PlayerLogicManager : MonoBehaviour, IStatusAffectable
     {
         return maxStamina;
     }
+
+    public void SetInvulnerability(bool isInvuln) { isInvulnerable = isInvuln; }
+
+    public bool IsDead(){ return isDead; }
 }

@@ -35,7 +35,7 @@ public class WeaponManager : MonoBehaviour
     }
 
     private void InputManager_OnMeleeAttackButtonPressed(object sender, EventArgs e) {
-        equippedMeleeWeapon.Attack(Vector3.forward);
+        equippedMeleeWeapon.Attack();
     }
 
     private void InputManager_OnReloadButtonPressed(object sender, System.EventArgs e) {
@@ -44,7 +44,7 @@ public class WeaponManager : MonoBehaviour
 
     // likely switch out for ViewportPointToRay() later (for hitscan)? OR just get look direction
     private void InputManager_OnRangedAttackButtonPressed(object sender, System.EventArgs e) {
-        equippedRangedWeapon.Shoot(Vector3.forward);
+        equippedRangedWeapon.Shoot();
     }
 
     public RangedWeapon GetEquippedRangedWeapon(){ return equippedRangedWeapon;}
@@ -82,5 +82,9 @@ public class WeaponManager : MonoBehaviour
 
     public void ChangeMeleeWeapon(MeleeWeapon newWeapon) {
         equippedMeleeWeapon = newWeapon;
+    }
+
+    public Vector3 GetLookingVector3() {
+        return transform.forward;
     }
 }
