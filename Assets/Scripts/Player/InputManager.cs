@@ -82,4 +82,8 @@ public class InputManager : MonoBehaviour
     public bool IsSlideButtonHeld() {
         return inputActions.Player.Slide.IsPressed();
     }
+
+    public bool IsWButtonHeld() {
+        return GetMovementVector3Normalised().z > 0;
+    }
 }

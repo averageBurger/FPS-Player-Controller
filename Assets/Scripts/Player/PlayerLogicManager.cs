@@ -22,7 +22,7 @@ public class PlayerLogicManager : MonoBehaviour
     }
 
     public void TakeDamage(float damageAmount) {
-        if (currentHealth == 0 || damageAmount < 1 || isInvulnerable) {
+        if (currentHealth == 0 || damageAmount <= 0 || isInvulnerable) {
             return;
         }
 
@@ -34,7 +34,7 @@ public class PlayerLogicManager : MonoBehaviour
     }
 
     public void HealDamage(float healAmount) {
-        if (currentHealth == maxHealth || healAmount < 1) {
+        if (currentHealth == maxHealth || healAmount <= 0) {
             return;
         }
 
@@ -51,7 +51,7 @@ public class PlayerLogicManager : MonoBehaviour
 
 
     public void DrainStamina(float drainAmount) {
-        if (currentStamina == 0 || drainAmount < 1) {
+        if (currentStamina == 0 || drainAmount <= 0) {
             return;
         }
 
@@ -62,7 +62,7 @@ public class PlayerLogicManager : MonoBehaviour
     }
 
     public void GainStamina(float gainAmount) {
-        if (currentStamina == maxStamina || gainAmount < 1) {
+        if (currentStamina == maxStamina || gainAmount <= 0) {
             return;
         }
 
