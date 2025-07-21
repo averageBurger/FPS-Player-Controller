@@ -128,9 +128,9 @@ public abstract class BossEnemyAI : EnemyAI
     // Can be called to deal damage to the target if they are a player
     protected virtual void DealDamage(float amount)
     {
-        if (target != null && target.TryGetComponent(out PlayerLogicManager _))
+        if (target != null && target.TryGetComponent(out PlayerLogic _))
         {
-            PlayerLogicManager.Instance.TakeDamage(amount);
+            PlayerLogic.Instance.TakeDamage(amount);
         }
     }
 

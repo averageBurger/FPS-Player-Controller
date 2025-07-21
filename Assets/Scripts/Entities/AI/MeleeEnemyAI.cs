@@ -72,9 +72,9 @@ public class MeleeEnemyAI : EnemyAI
             // Check if the target hit is assigned the PlayerLogicManager...
             // ...if so, they must be a player so we can deal damage to them
             // If we don't do this and the target is not a player, the player will still take damage
-            if (target.TryGetComponent(out PlayerLogicManager _))
+            if (target.TryGetComponent(out PlayerLogic _))
             {
-                PlayerLogicManager.Instance.TakeDamage(enemy.GetAttackDamage());
+                PlayerLogic.Instance.TakeDamage(enemy.GetAttackDamage());
             }
 
             attackCooldownTimer = enemy.GetAttackCooldown(); 

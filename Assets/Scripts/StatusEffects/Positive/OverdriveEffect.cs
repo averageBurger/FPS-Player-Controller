@@ -14,9 +14,9 @@ public class OverdriveEffect : StatusEffect
         base.Apply(handler);
 
         // Check if this effect has been applied on a player or entity
-        if (PlayerLogicManager.Instance == null) { return; }
+        if (PlayerLogic.Instance == null) { return; }
 
-        var player = PlayerLogicManager.Instance;
+        var player = PlayerLogic.Instance;
 
         float currentStamina = player.GetCurrentStamina();
 

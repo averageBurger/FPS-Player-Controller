@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerVisuals : MonoBehaviour
 {
-    [SerializeField] private PlayerMovement2 playerMovement;
+    [SerializeField] private PlayerMovement playerMovement;
 
     private void Start() {
         playerMovement.OnSlideStart += PlayerMovement_OnSlideStart;

@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public class PlayerLogicManager : MonoBehaviour, IStatusAffectable
+public class PlayerLogic : MonoBehaviour, IStatusAffectable
 {
-    public static PlayerLogicManager Instance { get; private set; }
+    public static PlayerLogic Instance { get; private set; }
 
     [SerializeField] private float maxHealth;
     [SerializeField] private float currentHealth;
@@ -17,6 +18,10 @@ public class PlayerLogicManager : MonoBehaviour, IStatusAffectable
     public bool isDead { get; private set; } = false;
 
     private bool isInvulnerable = false;
+
+    public event EventHandler OnHealthChanged;
+    public event EventHandler OnStaminaChanged;
+    public event EventHandler OnDeathStatusChanged;
 
     private void Awake() {
         currentHealth = maxHealth;
@@ -33,14 +38,16 @@ public class PlayerLogicManager : MonoBehaviour, IStatusAffectable
         }
 
         currentHealth -= damageAmount;
-        if (currentHealth < 0) {
+        if (currentHealth <= 0) {
             currentHealth = 0;
             isDead = true;
+            OnDeathStatusChanged?.Invoke(this, EventArgs.Empty);
         }
+        OnHealthChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void Update() {
-        PlayerMovement2 playerMovement = GetComponent<PlayerMovement2>();
+        PlayerMovement playerMovement = GetComponent<PlayerMovement>();
 
         if (!playerMovement.IsSliding() && !playerMovement.IsDashing()) {
             RegenerateStamina();
@@ -60,11 +67,13 @@ public class PlayerLogicManager : MonoBehaviour, IStatusAffectable
 
         if (currentHealth == 0) {
             isDead = false;
+            OnDeathStatusChanged?.Invoke(this, EventArgs.Empty);
         }
         currentHealth += healAmount;
         if (currentHealth > maxHealth) {
             currentHealth = maxHealth;
         }
+        OnHealthChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public void ApplyStatusEffect(StatusEffect effect)
@@ -100,6 +109,7 @@ public class PlayerLogicManager : MonoBehaviour, IStatusAffectable
         if (currentStamina < 0) {
             currentStamina = 0;
         }
+        OnStaminaChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public void GainStamina(float gainAmount) {
@@ -111,6 +121,7 @@ public class PlayerLogicManager : MonoBehaviour, IStatusAffectable
         if (currentStamina > maxStamina) {
             currentStamina = maxStamina;
         }
+        OnStaminaChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public float GetCurrentStamina() { return currentStamina; }

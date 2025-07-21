@@ -35,15 +35,27 @@ public class WeaponManager : MonoBehaviour
     }
 
     private void InputManager_OnMeleeAttackButtonPressed(object sender, EventArgs e) {
+        if (PlayerLogic.Instance.IsDead()) {
+            return;
+        }
+
         equippedMeleeWeapon.Attack();
     }
 
     private void InputManager_OnReloadButtonPressed(object sender, System.EventArgs e) {
+        if (PlayerLogic.Instance.IsDead()) {
+            return;
+        }
+
         equippedRangedWeapon.Reload();
     }
 
     // likely switch out for ViewportPointToRay() later (for hitscan)? OR just get look direction
     private void InputManager_OnRangedAttackButtonPressed(object sender, System.EventArgs e) {
+        if (PlayerLogic.Instance.IsDead()) {
+            return;
+        }
+
         equippedRangedWeapon.Shoot();
     }
 
