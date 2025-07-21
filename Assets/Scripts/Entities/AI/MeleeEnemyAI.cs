@@ -52,14 +52,17 @@ public class MeleeEnemyAI : EnemyAI
     // Uses the NavMesh to navigate to the target
     private void FollowTarget()
     {
-        LookAtTarget();
+        if (effectHandler != null && effectHandler.HasEffect<StunEffect>()) { return; }
 
+        LookAtTarget();
         navAgent.isStopped = false;
         navAgent.SetDestination(target.position);
     }
 
     private void AttackTarget()
     {
+        if (effectHandler != null && effectHandler.HasEffect<StunEffect>()) { return; }
+
         navAgent.isStopped = true;
 
         LookAtTarget();

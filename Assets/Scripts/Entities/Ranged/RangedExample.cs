@@ -12,7 +12,7 @@ public class RangedExample : RangedEnemy
     [SerializeField] private float enemyMaxHealth = 80f;
     [SerializeField] private float enemyReloadCooldown = 2.5f;
 
-    private void Awake()
+    private new void Awake()
     {
         // Override base values
         SetProjectileObject(enemyProjectileObj);

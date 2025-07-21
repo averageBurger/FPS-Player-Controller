@@ -16,7 +16,15 @@ public class BasicProjectile : EnemyProjectile
             // If we don't do this and the target is not a player, the player will still take damage
             if (target.TryGetComponent(out PlayerLogicManager _))
             {
-                PlayerLogicManager.Instance.TakeDamage(ProjectileDamage);
+                PlayerLogicManager player = PlayerLogicManager.Instance;
+
+                player.TakeDamage(ProjectileDamage);
+                
+                // TO TEST STATUS EFFECTS
+                // REMOVE/ALTER LATER ON!!!
+                player.ApplyStatusEffect(new BurnEffect(10f));
+                var effects = player.GetActiveStatusEffects();
+                Debug.Log($"Set player on fire: Active effects {StatusEffectUtils.FormatActiveStatusEffects(effects)}");
             }
         }
 

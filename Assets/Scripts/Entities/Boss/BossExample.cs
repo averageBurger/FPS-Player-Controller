@@ -10,7 +10,7 @@ public class BossExample : BossEnemy
     [SerializeField] private float bossPrimaryAttackDamage = 50f;
     [SerializeField] private bool bossHasSecondStage = true;
 
-    private void Awake()
+    private new void Awake()
     {
         SetHealth(bossMaxHealth);
         SetMovementSpeed(bossMovementSpeed);

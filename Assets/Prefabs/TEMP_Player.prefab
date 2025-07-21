@@ -370,6 +370,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 657821284412346574}
+  - component: {fileID: 4264838048748807782}
   m_Layer: 0
   m_Name: EquippedWeapons
   m_TagString: Untagged
@@ -395,6 +396,26 @@ Transform:
   - {fileID: 5449587917717084982}
   m_Father: {fileID: 903443283567801209}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4264838048748807782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2230847109252127686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SerializedVersion: 0
+  m_OverrideArea: 0
+  m_Area: 0
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 1
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &2358819159384297341
 GameObject:
   m_ObjectHideFlags: 0
@@ -1637,6 +1658,9 @@ GameObject:
   - component: {fileID: 6463598017244756015}
   - component: {fileID: 8586576347458916904}
   - component: {fileID: 4820738131980871125}
+  - component: {fileID: 6756061670594149158}
+  - component: {fileID: 6883221895722101972}
+  - component: {fileID: 3164889293628375067}
   m_Layer: 0
   m_Name: TEMP_Player
   m_TagString: Untagged
@@ -1653,7 +1677,7 @@ Transform:
   m_GameObject: {fileID: 8499414779095933298}
   serializedVersion: 2
   m_LocalRotation: {x: -0.0009244306, y: -0.5186291, z: 0.0026466167, w: 0.8549948}
-  m_LocalPosition: {x: 10.28, y: 1.67, z: -9.69}
+  m_LocalPosition: {x: 11.269, y: 1.582, z: -10.454}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1704,6 +1728,7 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 0
   maxStamina: 100
+  currentStamina: 0
 --- !u!136 &8461588360938603267
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1969,6 +1994,59 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!65 &6756061670594149158
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8499414779095933298}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 2, z: 1.2843672}
+  m_Center: {x: -5.7131154e-11, y: -1.0244805e-11, z: 0.14218187}
+--- !u!114 &6883221895722101972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8499414779095933298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SerializedVersion: 0
+  m_OverrideArea: 0
+  m_Area: 0
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 1
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
+--- !u!114 &3164889293628375067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8499414779095933298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3177117becbff874188423ba9d156de5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8771772829945231459
 GameObject:
   m_ObjectHideFlags: 0

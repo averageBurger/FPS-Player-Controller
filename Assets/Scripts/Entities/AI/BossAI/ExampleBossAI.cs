@@ -7,7 +7,7 @@ public class ExampleBossAI : BossEnemyAI
     // ...from what is defined in the parent classes
     [SerializeField] private float bossDetectionRange = 80f;
 
-    private void Awake()
+    private new void Awake()
     {
         SetDetectionRange(bossDetectionRange);
     }

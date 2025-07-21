@@ -1,6 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerLogicManager : MonoBehaviour
+public class PlayerLogicManager : MonoBehaviour, IStatusAffectable
 {
     public static PlayerLogicManager Instance { get; private set; }
 
@@ -9,12 +10,17 @@ public class PlayerLogicManager : MonoBehaviour
     [SerializeField] private float maxStamina;
     [SerializeField] private float currentStamina;
 
+    private StatusEffectHandler effectHandler;
+
     public bool isDead { get; private set; } = false;
 
     private void Awake() {
         currentHealth = maxHealth;
         currentStamina = maxStamina;
         Instance = this;
+
+        effectHandler = GetComponent<StatusEffectHandler>();
+        if (effectHandler == null ) { effectHandler = gameObject.AddComponent<StatusEffectHandler>(); }
     }
 
     public void TakeDamage(float damageAmount) {
@@ -29,6 +35,12 @@ public class PlayerLogicManager : MonoBehaviour
         }
     }
 
+    // For status effects
+    void IStatusAffectable.TakeDamage(float amount)
+    {
+        TakeDamage(amount);
+    }
+
     public void HealDamage(float healAmount) {
         if (currentHealth == maxHealth || healAmount < 1) {
             return;
@@ -41,6 +53,21 @@ public class PlayerLogicManager : MonoBehaviour
         if (currentHealth > maxHealth) {
             currentHealth = maxHealth;
         }
+    }
+
+    public void ApplyStatusEffect(StatusEffect effect)
+    {
+        effectHandler.ApplyStatusEffect(effect);
+    }
+
+    public bool HasEffect<E>() where E : StatusEffect
+    {
+        return effectHandler.HasEffect<E>();
+    }
+
+    public IReadOnlyList<StatusEffect> GetActiveStatusEffects()
+    {
+        return effectHandler.ActiveEffects;
     }
 
     public float GetCurrentHealth() { return currentHealth; }

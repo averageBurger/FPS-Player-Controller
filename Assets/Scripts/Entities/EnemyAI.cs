@@ -12,17 +12,20 @@ public class EnemyAI : Entity
     public float GetDetectionRange() => detectionRange;
     public void SetDetectionRange(float value) => detectionRange = value;
 
+    protected override void Start()
+    {
+        base.Start();
+    }
+
     protected override void Update()
     {
-        base.Update();
-
-        if (isStunned) { return; }
+        if (effectHandler != null && effectHandler.HasEffect<StunEffect>()) { return; }
     }
 
     // Cast a ray from the enemy's origin point defined to be their eye level, if the ray hits the player they have been seen -> return true
     public bool CanSeeTarget()
     {
-        if (isBlind == true) { return false;  }
+        if (effectHandler != null && effectHandler.HasEffect<BlindEffect>()) { return false;  }
 
         // Assumption that all enemies are of the same height, this is fine for now
         // Enemy's face is on the Z axis therefore we set the eyes on this axis
@@ -44,7 +47,8 @@ public class EnemyAI : Entity
 
     public void LookAtTarget()
     {
-        if (target == null || isBlind == true || LooksAtTarget == false) { return; }
+        if (target == null) { return; }
+        if (effectHandler != null && effectHandler.HasEffect<BlindEffect>() || !LooksAtTarget) { return; }
 
         // Aligns the enemy's Z axis towards the player
         // This makes the enemy object's Z axis the face of the enemy

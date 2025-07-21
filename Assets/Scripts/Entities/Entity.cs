@@ -1,40 +1,31 @@
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 // Contains the base functionality of an entity
 // Typically used and expanded upon by enemies
 // Can be used for any "living" object
-public class Entity : MonoBehaviour
+public class Entity : MonoBehaviour, IStatusAffectable
 {
     // Unless they are overriden in their respective child class, changing these stats will affect all entities!
-    private bool isBoss = false;
     private bool invulnerable = false;
     private bool looksAtTarget = true;
 
     private float maxHealth = 100f;
     private float movementSpeed = 6f;
 
-    public bool IsBoss => isBoss;
+    protected StatusEffectHandler effectHandler;
+
+    [Header("Entity State")]
+    [SerializeField] protected float health;
+    [SerializeField] protected bool isDead = false; // Not necessary unless the game object is not destroyed
+
     public bool LooksAtTarget => looksAtTarget;
-
     public float MaxHealth => maxHealth;
-    public float GetHealth() => health;
-    public float GetMovementSpeed() => movementSpeed;
-    public bool GetInvulnerability() => invulnerable;
 
-    public void SetHealth(float value) => health = value;
-    public void SetMovementSpeed(float value) => movementSpeed = value;
-    public void SetInvulnerability(bool state) => invulnerable = state;
-
-    [Header("State")]
-    protected float health;
-    protected bool isDead = false;
-    protected bool isStunned = false;
-    protected bool isOnFire = false;
-    protected bool isBlind = false;
-
-    private float stunTimer = 0f;
-    private float blindTimer = 0f;
+    protected virtual void Awake()
+    {
+        effectHandler = GetComponent<StatusEffectHandler>();
+    }
 
     protected virtual void Start()
     {
@@ -43,8 +34,7 @@ public class Entity : MonoBehaviour
 
     protected virtual void Update()
     {
-        EffectTimer(stunTimer, isStunned);
-        EffectTimer(blindTimer, isBlind);
+        if (isDead) { Kill(); }
     }
 
     public virtual void TakeDamage(float damage)
@@ -58,41 +48,21 @@ public class Entity : MonoBehaviour
         }
     }
 
+    // For status effects
+    void IStatusAffectable.TakeDamage(float amount)
+    {
+        TakeDamage(amount);
+    }
+
     public virtual void Kill()
     {
-        if (isDead || invulnerable == true) { return; }
+        if (invulnerable == true) { return; }
         isDead = true;
 
         Debug.Log($"{gameObject.name} has died!");
 
         // Trigger death animation
         Destroy(gameObject);
-    }
-
-    public virtual void Stun(float duration)
-    {
-        if (isDead || invulnerable == true) { return; }
-
-        isStunned = true;
-        stunTimer = duration;
-    }
-
-    public virtual void Blind(float duration)
-    {
-        if (isDead || invulnerable == true) { return; }
-
-        isBlind = true;
-        blindTimer = duration;
-    }
-
-    public virtual void SetOnFire(float damagePerSecond, float duration)
-    {
-        if (isDead || invulnerable == true) { return; }
-
-        // TODO: Indicate that the entity is on fire
-
-        isOnFire = true;
-        StartCoroutine(ApplyBurnEffect(damagePerSecond, duration));
     }
 
     // Can be made if needed at any point
@@ -106,33 +76,27 @@ public class Entity : MonoBehaviour
         // TODO: On enemy spawning in related functionality
     }
 
-    private void EffectTimer(float timer, bool effectState)
+    public bool HasEffect<E>() where E : StatusEffect
     {
-        if (effectState)
-        {
-            timer -= Time.deltaTime;
-            if (timer <= 0f)
-            {
-                effectState = false;
-            }
-        }
+        return effectHandler.HasEffect<E>();
     }
 
-    private IEnumerator ApplyBurnEffect(float damagePerSecond, float duration)
+    public float GetHealth() => health;
+    public float GetMovementSpeed() => movementSpeed;
+    public bool GetInvulnerability() => invulnerable;
+
+    public IReadOnlyList<StatusEffect> GetActiveStatusEffects()
     {
-        float burnInterval = 1f; 
-        float timeElapsed = 0f;
+        return effectHandler.ActiveEffects;
+    }
 
-        while (timeElapsed < duration) 
-        { 
-            if (isDead || invulnerable == true) { break; }
+    public void SetHealth(float value) => health = value;
+    public void SetMovementSpeed(float value) => movementSpeed = value;
+    public void SetInvulnerability(bool state) => invulnerable = state;
 
-            TakeDamage(damagePerSecond);
-
-            yield return new WaitForSeconds(burnInterval);
-            timeElapsed += burnInterval;
-        }
-
-        isOnFire = false;
+    public void ApplyStatusEffect(StatusEffect effect)
+    {
+        if (invulnerable) { return; }
+        effectHandler.ApplyStatusEffect(effect);
     }
 }

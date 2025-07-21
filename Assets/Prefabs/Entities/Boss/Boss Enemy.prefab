@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2151140611858634688}
   - component: {fileID: 8261474282922130435}
   - component: {fileID: 2061066600208599907}
+  - component: {fileID: 1840888699958275782}
   m_Layer: 7
   m_Name: Boss Enemy
   m_TagString: Untagged
@@ -31,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 2447134152747049238}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.3676, y: 3.0066, z: 3.03}
+  m_LocalPosition: {x: -2.17, y: 3.0066, z: 3.03}
   m_LocalScale: {x: 3.2359416, y: 2.2251031, z: 1.8417504}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -125,6 +126,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04c77a668b696524487424241d1b791f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 0
+  isDead: 0
   bossMaxHealth: 2000
   bossMovementSpeed: 9
   bossPrimaryAttackDamage: 50
@@ -141,6 +144,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02adad26e16dbca45925f4b642f85b63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 0
+  isDead: 0
   target: {fileID: 0}
   bossDetectionRange: 80
 --- !u!195 &2061066600208599907
@@ -165,3 +170,15 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &1840888699958275782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2447134152747049238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3177117becbff874188423ba9d156de5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
