@@ -16,8 +16,8 @@ public class Entity : MonoBehaviour, IStatusAffectable
     protected StatusEffectHandler effectHandler;
 
     [Header("Entity State")]
-    [SerializeField] protected float health;
-    [SerializeField] protected bool isDead = false; // Not necessary unless the game object is not destroyed
+    protected float health;
+    protected bool isDead = false; // Not necessary unless the game object is not destroyed
 
     public bool LooksAtTarget => looksAtTarget;
     public float MaxHealth => maxHealth;

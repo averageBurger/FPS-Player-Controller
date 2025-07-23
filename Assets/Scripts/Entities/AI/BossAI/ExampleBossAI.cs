@@ -5,12 +5,6 @@ public class ExampleBossAI : BossEnemyAI
     // Only serialize fields that have been overriden
     // This makes sense because we shouldn't be serializing stats that aren't being changed...
     // ...from what is defined in the parent classes
-    [SerializeField] private float bossDetectionRange = 80f;
-
-    private new void Awake()
-    {
-        SetDetectionRange(bossDetectionRange);
-    }
 
     protected override void PrimaryAttack()
     {

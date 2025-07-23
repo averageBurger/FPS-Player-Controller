@@ -5,12 +5,7 @@ using UnityEngine;
 // When creating AI for an enemy, it should be a child of this class!
 public class EnemyAI : Entity
 {
-    private float detectionRange = 15f;
-
     public Transform target;
-
-    public float GetDetectionRange() => detectionRange;
-    public void SetDetectionRange(float value) => detectionRange = value;
 
     protected override void Start()
     {

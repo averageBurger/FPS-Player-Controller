@@ -9,6 +9,7 @@ public class BossExample : BossEnemy
     [SerializeField] private float bossMovementSpeed = 9f;
     [SerializeField] private float bossPrimaryAttackDamage = 50f;
     [SerializeField] private bool bossHasSecondStage = true;
+    [SerializeField] private bool bossAlwaysSeesTarget = false;
 
     private new void Awake()
     {
@@ -16,5 +17,6 @@ public class BossExample : BossEnemy
         SetMovementSpeed(bossMovementSpeed);
         SetPrimaryAttackDamage(bossPrimaryAttackDamage);
         SetHasSecondStage(bossHasSecondStage);
+        SetAlwaysSeesTarget(bossAlwaysSeesTarget);
     }
 }

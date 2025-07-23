@@ -10,7 +10,7 @@ public class RangedExample : RangedEnemy
     [SerializeField] private Transform enemyProjectileFirePoint;
 
     [SerializeField] private float enemyMaxHealth = 80f;
-    [SerializeField] private float enemyReloadCooldown = 2.5f;
+    [SerializeField] private float enemyReloadCooldown = 2f;
 
     private new void Awake()
     {

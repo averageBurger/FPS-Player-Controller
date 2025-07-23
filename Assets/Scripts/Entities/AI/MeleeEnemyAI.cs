@@ -33,7 +33,7 @@ public class MeleeEnemyAI : EnemyAI
         { 
             AttackTarget();
         }
-        else if (distanceToTarget <= GetDetectionRange() && canSeeTarget)
+        else if (canSeeTarget)
         {
             FollowTarget();
         }

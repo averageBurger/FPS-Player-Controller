@@ -72,9 +72,5 @@ public class RangedEnemyAI : EnemyAI
             Vector3 direction = (target.position + Vector3.up - projectileObject.transform.position).normalized;
             projectile.Spawn(direction);
         }
-        else
-        {
-            Debug.LogWarning("Spawned projectile does not implement the IProjectile interface from the projectile class!");
-        }
     }
 }

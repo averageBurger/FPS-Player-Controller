@@ -38,7 +38,12 @@ public abstract class BossEnemyAI : EnemyAI
             LookAtTarget();
         }
 
-        if (bossEnemy.FollowsTarget && navAgent != null)
+        if (bossEnemy.FollowsTarget && CanSeeTarget() && navAgent != null)
+        {
+            navAgent.isStopped = false;
+            navAgent.SetDestination(target.position);
+        }
+        else if (bossEnemy.AlwaysSeesTarget && navAgent != null)
         {
             navAgent.isStopped = false;
             navAgent.SetDestination(target.position);
@@ -58,7 +63,6 @@ public abstract class BossEnemyAI : EnemyAI
         float distanceToTarget = Vector3.Distance(transform.position, target.position);
 
         // Attacks work in a combo: Primary -> Primary -> Secondary (...and repeat)
-        // Using coroutines here ensures that only one attack can be performed at a time
         if (!isPerformingAttack)
         {
             switch (currentPhase)
