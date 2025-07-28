@@ -3,16 +3,19 @@ using UnityEngine;
 // Contains the base enemy AI related functions for children to inherit
 // All of the enemy's AI share functions from here unless specified otherwise
 // When creating AI for an enemy, it should be a child of this class!
-public class EnemyAI : Entity
+public class EnemyAI : MonoBehaviour
 {
     public Transform target;
+    protected StatusEffectHandler effectHandler;
+    private Entity entity;
 
-    protected override void Start()
+    protected void Start()
     {
-        base.Start();
+        effectHandler = GetComponent<StatusEffectHandler>();
+        entity = GetComponent<Entity>();
     }
 
-    protected override void Update()
+    protected void Update()
     {
         if (effectHandler != null && effectHandler.HasEffect<StunEffect>()) { return; }
     }
@@ -20,6 +23,7 @@ public class EnemyAI : Entity
     // Cast a ray from the enemy's origin point defined to be their eye level, if the ray hits the player they have been seen -> return true
     public bool CanSeeTarget()
     {
+        // If the enemy is blinded they do not see anything (obviously)
         if (effectHandler != null && effectHandler.HasEffect<BlindEffect>()) { return false;  }
 
         // Assumption that all enemies are of the same height, this is fine for now
@@ -42,8 +46,11 @@ public class EnemyAI : Entity
 
     public void LookAtTarget()
     {
-        if (target == null) { return; }
-        if (effectHandler != null && effectHandler.HasEffect<BlindEffect>() || !LooksAtTarget) { return; }
+        bool isBlinded = effectHandler != null && effectHandler.HasEffect<BlindEffect>();
+        bool looksAtTarget = entity != null && entity.GetLooksAtTarget();
+
+        // If the enemy is blind/does not look at the target/the target is null we do not look in their direction
+        if (isBlinded || !looksAtTarget || target == null) { return; }
 
         // Aligns the enemy's Z axis towards the player
         // This makes the enemy object's Z axis the face of the enemy

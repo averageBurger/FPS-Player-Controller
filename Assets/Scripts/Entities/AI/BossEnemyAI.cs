@@ -121,7 +121,7 @@ public abstract class BossEnemyAI : EnemyAI
     {
         if (!bossEnemy.HasSecondStage || inSecondStage) return;
 
-        float healthRatio = bossEnemy.GetHealth() / bossEnemy.MaxHealth;
+        float healthRatio = bossEnemy.GetHealth() / bossEnemy.GetMaxHealth();
         if (healthRatio <= bossEnemy.SecondStageHealthThreshold)
         {
             inSecondStage = true;

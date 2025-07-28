@@ -4,21 +4,19 @@ public class BasicProjectile : EnemyProjectile
 {
     // Unique to the projectile
     [Header("Projectile Stats")]
-    [SerializeField] public override float ProjectileDamage => 40f;
+    [SerializeField] public override float ProjectileDamage => 30f;
     [SerializeField] public override float ProjectileSpeed => 30f;
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.transform.root == target) 
+        if(collision.transform == target) 
         {
-            // Check if the target hit is assigned the PlayerLogicManager...
-            // ...if so, they must be a player so we can deal damage to them
-            // If we don't do this and the target is not a player, the player will still take damage
-            PlayerLogic player = PlayerLogic.Instance;
+            if (target.TryGetComponent(out PlayerLogic _))
+            {
+                PlayerLogic.Instance.TakeDamage(ProjectileDamage);
+            }
 
-            player.TakeDamage(ProjectileDamage);
-                
-            // TO TEST STATUS EFFECTS
+            // THE CODE BELOW IS TO TEST STATUS EFFECTS
             // REMOVE/ALTER LATER ON!!!
             // player.ApplyStatusEffect(new BurnEffect(10f));
             // var effects = player.GetActiveStatusEffects();

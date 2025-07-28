@@ -30,7 +30,7 @@ public class MeleeEnemyAI : EnemyAI
         bool canSeeTarget = CanSeeTarget();
 
         if (distanceToTarget <= enemy.GetAttackRange() && canSeeTarget) 
-        { 
+        {
             AttackTarget();
         }
         else if (canSeeTarget)

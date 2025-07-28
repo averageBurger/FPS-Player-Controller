@@ -6,6 +6,7 @@ public class RangedExample : RangedEnemy
     // Only serialize fields that have been overriden
     // This makes sense because we shouldn't be serializing stats that aren't being changed...
     // ...from what is defined in the parent classes
+    [Header("Ranged Example")]
     [SerializeField] private GameObject enemyProjectileObj;
     [SerializeField] private Transform enemyProjectileFirePoint;
 

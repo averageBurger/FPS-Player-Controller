@@ -16,11 +16,10 @@ public class Entity : MonoBehaviour, IStatusAffectable
     protected StatusEffectHandler effectHandler;
 
     [Header("Entity State")]
-    protected float health;
+    public float health;
     protected bool isDead = false; // Not necessary unless the game object is not destroyed
 
     public bool LooksAtTarget => looksAtTarget;
-    public float MaxHealth => maxHealth;
 
     protected virtual void Awake()
     {
@@ -29,7 +28,7 @@ public class Entity : MonoBehaviour, IStatusAffectable
 
     protected virtual void Start()
     {
-        health = MaxHealth;
+        health = maxHealth;
     }
 
     protected virtual void Update()
@@ -82,8 +81,10 @@ public class Entity : MonoBehaviour, IStatusAffectable
     }
 
     public float GetHealth() => health;
+    public float GetMaxHealth() => maxHealth;
     public float GetMovementSpeed() => movementSpeed;
     public bool GetInvulnerability() => invulnerable;
+    public bool GetLooksAtTarget() => looksAtTarget;
 
     public IReadOnlyList<StatusEffect> GetActiveStatusEffects()
     {
@@ -91,6 +92,7 @@ public class Entity : MonoBehaviour, IStatusAffectable
     }
 
     public void SetHealth(float value) => health = value;
+    public float SetMaxHealth(float value) => maxHealth =  value;
     public void SetMovementSpeed(float value) => movementSpeed = value;
     public void SetInvulnerability(bool state) => invulnerable = state;
 
