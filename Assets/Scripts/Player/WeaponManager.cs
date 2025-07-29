@@ -97,6 +97,6 @@ public class WeaponManager : MonoBehaviour
     }
 
     public Vector3 GetLookingVector3() {
-        return transform.forward;
+        return Camera.main.transform.forward;
     }
 }

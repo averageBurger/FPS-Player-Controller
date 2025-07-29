@@ -13,6 +13,5 @@ public class Pistol : HitscanWeapon
         }
 
         gameObjectHit.GetComponent<Entity>().TakeDamage(damageDealt);
-        Debug.Log("Deal Damage! : " + damageDealt);
     }
 }

@@ -28,7 +28,7 @@ public class HitscanWeaponVisuals : MonoBehaviour
 
     private void Weapon_OnRangedWeaponShot(object sender, System.EventArgs e) {
         Vector3 spawn = visualBulletSpawnPoint.position;
-        Vector3 inFrontOfSpawn = spawn + WeaponManager.Instance.transform.forward * 3;
+        Vector3 inFrontOfSpawn = spawn + WeaponManager.Instance.GetLookingVector3() * 3;
 
         lineRenderer.SetPositions(new Vector3[2] {
             spawn,

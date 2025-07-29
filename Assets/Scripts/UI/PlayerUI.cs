@@ -1,27 +1,31 @@
 using System;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerUI : MonoBehaviour
 {
-    private PlayerLogic playerLogicManager;
+    private PlayerLogic playerLogic;
 
     [SerializeField] private TextMeshProUGUI ammoText;
-    [SerializeField] private Image HealthBar;
-    [SerializeField] private Image StaminaBar;
+    [SerializeField] private Image healthBar;
+    [SerializeField] private Image staminaBar;
+    [SerializeField] private GameObject freeSlideIndicator;
     [SerializeField] private GameObject deathTextGO;
     
     private void Start() {
-        playerLogicManager = PlayerLogic.Instance;
+        playerLogic = PlayerLogic.Instance;
 
         WeaponManager_OnAmmoChanged(this, EventArgs.Empty);
         WeaponManager.Instance.OnAmmoChanged += WeaponManager_OnAmmoChanged;
-        playerLogicManager.OnHealthChanged += PlayerLogicManager_OnHealthChanged;
-        playerLogicManager.OnStaminaChanged += PlayerLogicManager_OnStaminaChanged;
-        playerLogicManager.OnDeathStatusChanged += PlayerLogicManager_OnDeathStatusChanged;
+        playerLogic.OnHealthChanged += PlayerLogic_OnHealthChanged;
+        playerLogic.OnStaminaChanged += PlayerLogic_OnStaminaChanged;
+        playerLogic.OnDeathStatusChanged += PlayerLogic_OnDeathStatusChanged;
+        playerLogic.GetComponent<PlayerMovement>().OnFreeSlideThresholdPassed += PlayerMovement_OnFreeSlideThresholdPassed;
 
         deathTextGO.SetActive(false);
+        freeSlideIndicator.SetActive(false);
     }
 
     private void WeaponManager_OnAmmoChanged(object sender, EventArgs e) {
@@ -32,29 +36,35 @@ public class PlayerUI : MonoBehaviour
         ammoText.text = magazineAmmo.ToString() + " | " + reserveAmmo.ToString();
     }
 
-    private void PlayerLogicManager_OnHealthChanged(object sender, EventArgs e) {
-        DamageChecker(playerLogicManager.GetCurrentHealth(), playerLogicManager.GetMaxHealth());
+    private void PlayerLogic_OnHealthChanged(object sender, EventArgs e) {
+        DamageChecker(playerLogic.GetCurrentHealth(), playerLogic.GetMaxHealth());
     }
 
-    private void PlayerLogicManager_OnStaminaChanged(object sender, EventArgs e) {
-        StaminaChecker(playerLogicManager.GetCurrentStamina(), playerLogicManager.GetMaxStamina());
+    private void PlayerLogic_OnStaminaChanged(object sender, EventArgs e) {
+        StaminaChecker(playerLogic.GetCurrentStamina(), playerLogic.GetMaxStamina());
     }
 
-    private void PlayerLogicManager_OnDeathStatusChanged(object sender, EventArgs e) {
-        deathTextGO.SetActive(playerLogicManager.IsDead());
+    private void PlayerLogic_OnDeathStatusChanged(object sender, EventArgs e) {
+        deathTextGO.SetActive(playerLogic.IsDead());
+    }
+
+    private void PlayerMovement_OnFreeSlideThresholdPassed(object sender, PlayerMovement.OnFreeSlideThresholdPassedEventArgs e) {
+        freeSlideIndicator.SetActive(!e.shouldDrain);
     }
 
     private void DamageChecker(float health, float maxHealth) {
-        HealthBar.fillAmount = health / maxHealth;
+        healthBar.fillAmount = health / maxHealth;
     }
 
     private void StaminaChecker(float stamina, float staminaMax) {
-        StaminaBar.fillAmount = stamina / staminaMax;
+        staminaBar.fillAmount = stamina / staminaMax;
     }
 
     private void OnDestroy() {
         WeaponManager.Instance.OnAmmoChanged -= WeaponManager_OnAmmoChanged;
-        playerLogicManager.OnHealthChanged -= PlayerLogicManager_OnHealthChanged;
-        playerLogicManager.OnStaminaChanged -= PlayerLogicManager_OnStaminaChanged;
+        playerLogic.OnHealthChanged -= PlayerLogic_OnHealthChanged;
+        playerLogic.OnStaminaChanged -= PlayerLogic_OnStaminaChanged;
+        playerLogic.OnDeathStatusChanged -= PlayerLogic_OnDeathStatusChanged;
+        //playerLogic.GetComponent<PlayerMovement>().OnFreeSlideThresholdPassed -= PlayerMovement_OnFreeSlideThresholdPassed;
     }
 }

@@ -3,21 +3,24 @@ using UnityEngine;
 public class PlayerVisuals : MonoBehaviour
 {
     [SerializeField] private PlayerMovement playerMovement;
-
+    [SerializeField] private GameObject playerLegs;
+    
     private void Start() {
-        playerMovement.OnSlideStart += PlayerMovement_OnSlideStart;
-        playerMovement.OnSlideEnd += PlayerMovement_OnSlideEnd;
+        playerMovement.OnHitboxDown += PlayerMovement_OnHitboxDown;
+        playerMovement.OnHitboxUp += PlayerMovement_OnHitboxUp;
     }
 
-    private void PlayerMovement_OnSlideStart(object sender, System.EventArgs e) {
-        Vector3 rotationAxis = Vector3.Cross(Vector3.up, playerMovement.GetSlideStartDirection());
+    private void PlayerMovement_OnHitboxDown(object sender, System.EventArgs e) {
+        Vector3 rotationAxis = Vector3.Cross(playerMovement.GetSlideStartDirection(), Vector3.up);
+        Vector3 rotationDir = Quaternion.AngleAxis(75, rotationAxis) * playerMovement.GetSlideStartDirection();
+        transform.rotation = Quaternion.LookRotation(rotationDir, Vector3.up);
 
-        transform.localRotation = Quaternion.AngleAxis(-75f, rotationAxis) * transform.localRotation;
-        transform.localPosition = new Vector3(0f, -0.3f, 0f);
+        playerLegs.SetActive(true);
     }
 
-    private void PlayerMovement_OnSlideEnd(object sender, System.EventArgs e) {
+    private void PlayerMovement_OnHitboxUp(object sender, System.EventArgs e) {
         transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
         transform.localPosition = Vector3.zero;
+        playerLegs.SetActive(false);
     }
 }

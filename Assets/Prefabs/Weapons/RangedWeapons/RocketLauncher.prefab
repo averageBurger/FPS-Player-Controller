@@ -355,16 +355,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   range: 0
-  damage: 4
+  damage: 50
   weakpointMultiplier: 0
   magazineSize: 5
   startingAmmo: 20
   reloadTime: 4
   fireRate: 0.5
-  projectileSpeed: 3
+  fireType: 0
+  projectileSpeed: 4
   projectileSpawnPointTransform: {fileID: 1173261952126539141}
   projectileGameObject: {fileID: 5187422040411955134, guid: 51f8aaf1effc34c42b2ddb638251f576, type: 3}
-  splashDamage: 2
+  splashDamage: 15
   explosionRadius: 3
 --- !u!1 &5904413955872006648
 GameObject:

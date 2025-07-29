@@ -87,7 +87,7 @@ public abstract class RangedWeapon : MonoBehaviour
             ammoInReserve = 0;
         }
 
-            WeaponManager.Instance.CallOnAmmoChanged();
+        WeaponManager.Instance.CallOnAmmoChanged();
         reloading = false;
     }
 

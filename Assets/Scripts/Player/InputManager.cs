@@ -68,13 +68,6 @@ public class InputManager : MonoBehaviour
         return moveVector;
     }
 
-    public Vector2 GetLookRotationVector2Normalised() {
-        Vector2 inputVector = inputActions.Player.Look.ReadValue<Vector2>();
-        inputVector = inputVector.normalized;
-
-        return inputVector;
-    }
-
     public bool IsRangedAttackButtonHeld() {
         return inputActions.Player.RangedAttack.IsPressed();
     }

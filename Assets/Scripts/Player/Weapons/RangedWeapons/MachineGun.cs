@@ -9,6 +9,5 @@ public class MachineGun : HitscanWeapon
         }
 
         gameObjectHit.GetComponent<Entity>().TakeDamage(damageDealt);
-        Debug.Log("Deal Damage! : " + damageDealt);
     }
 }

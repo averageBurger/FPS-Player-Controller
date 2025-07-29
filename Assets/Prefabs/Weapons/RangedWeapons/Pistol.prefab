@@ -405,10 +405,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a43a09279672464891efcadabc8efd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 20
-  damage: 1
+  range: 200
+  damage: 40
   weakpointMultiplier: 2
   magazineSize: 10
   startingAmmo: 100
   reloadTime: 4
   fireRate: 2
+  fireType: 0

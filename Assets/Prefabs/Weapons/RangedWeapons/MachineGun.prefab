@@ -232,8 +232,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d348891d33f8e4bb6bb85e93031879, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 15
-  damage: 1
+  range: 200
+  damage: 5
   weakpointMultiplier: 2
   magazineSize: 100
   startingAmmo: 1000

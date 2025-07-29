@@ -1,6 +1,13 @@
 using System;
 using UnityEngine;
 
+// added legs visual so its easier to tell when you are sliding. can no longer double jump while sliding.
+// now only get off the ground when you release ctrl, instead if you finish sliding you just stay with the hitbox down but can't move. now can just go to floor hitbox by pressing ctrl when you're on the ground.
+// fixed slide timer. now once you let go of w, there's no pressing down again to restart your initial slide boost.
+// changed going from mid air into a slide. If you are continueing a slide, it just uses the current timer. If you're slide had stopped but you're still crouched, you don't get a boost. If you weren't crouched, it starts a new slide so you get a boost.
+// made it so that stamina stops going down once you reach a threshold speed in the slope direction
+// made it so that in mid-air, movement is just horizontal rather than based on the last surface you were on
+
 public class PlayerMovement : MonoBehaviour
 {
 
@@ -32,9 +39,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float slideStartSpeed;
     [SerializeField] private float slideStartPeriod;
     [SerializeField] private float slideFadePeriod;
+    [SerializeField] private float freeSlideThresholdSpeed;
     private float slideMinimumAngle = 5;
     private float slideAcceleratingForce = 50f;
     private float slideDownMaxForce = 30f;
+    private float minimumSlideTime = 1f;
 
     [Header("Layers")]
     [SerializeField] private LayerMask surfaceLayerMask;
@@ -66,9 +75,15 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 slideStartDirection;
     private Vector3 slideSlopeDownDirection;
     private bool sliding = false;
+    private bool hitboxDown = false;
+    private bool shouldDrainStamina = true;
 
-    public event EventHandler OnSlideStart;
-    public event EventHandler OnSlideEnd;
+    public event EventHandler OnHitboxDown;
+    public event EventHandler OnHitboxUp;
+    public event EventHandler<OnFreeSlideThresholdPassedEventArgs> OnFreeSlideThresholdPassed;
+    public class OnFreeSlideThresholdPassedEventArgs : EventArgs {
+        public bool shouldDrain;
+    }
 
 
 
@@ -90,7 +105,9 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void Update() {
-        CheckSurfaceAngle();
+        if (isOnGround) {
+            CheckSurfaceAngle();
+        }
     }
 
     private void FixedUpdate() {
@@ -109,34 +126,44 @@ public class PlayerMovement : MonoBehaviour
             }
 
         } else if (sliding) {
-            if (PlayerLogic.Instance.GetCurrentStamina() < slideStaminaDrainRate * Time.fixedDeltaTime) {
-                FinishSliding();
+            Vector3 parallelVelocityDir = GetParallelToSurfaceNormalised(rb.linearVelocity, surfaceNormal);
+            bool same = shouldDrainStamina == !(VectorsAreSimiliar(parallelVelocityDir, slideSlopeDownDirection, 10) && rb.linearVelocity.magnitude >= freeSlideThresholdSpeed && slideTimer >= slideStartPeriod + slideFadePeriod);
+            if (!same) {
+                shouldDrainStamina = !(VectorsAreSimiliar(parallelVelocityDir, slideSlopeDownDirection, 10) && rb.linearVelocity.magnitude >= freeSlideThresholdSpeed && slideTimer >= slideStartPeriod + slideFadePeriod);
+                OnFreeSlideThresholdPassed?.Invoke(this, new OnFreeSlideThresholdPassedEventArgs { shouldDrain = shouldDrainStamina});
+            }
+
+            if (shouldDrainStamina && PlayerLogic.Instance.GetCurrentStamina() < slideStaminaDrainRate * Time.fixedDeltaTime) {
+                sliding = false;
                 return;
             }
 
             bool slid = false;
+            slideTimer += Time.fixedDeltaTime;
             if (slideTimer < (slideStartPeriod + slideFadePeriod) && inputM.IsWButtonHeld()) {
-                slideTimer += Time.fixedDeltaTime;
                 HandleSlideStart();
                 slid = true;
-            } else if (surfaceAngle < slideMinimumAngle && (!inputM.IsWButtonHeld() || rb.linearVelocity.magnitude < speed) ) {
-                FinishSliding();
+            } else if (slideTimer < (slideStartPeriod + slideFadePeriod) && !inputM.IsWButtonHeld()) {
+                slideTimer = slideStartPeriod + slideFadePeriod;
+                if (surfaceAngle < slideMinimumAngle) {
+                    sliding = false;
+                }
             }
 
 
-            if (slideTimer > slideStartPeriod && isOnGround && surfaceAngle >= slideMinimumAngle) {
+            if ((slideTimer > slideStartPeriod || !slid) && surfaceAngle >= slideMinimumAngle) {
                 HandleSlide();
                 slid = true;
             }
-            if (slid) {
+            if (shouldDrainStamina && slid) {
                 PlayerLogic.Instance.DrainStamina(slideStaminaDrainRate * Time.fixedDeltaTime);
             }
 
         } else if (isOnWall && !isOnGround && inputM.IsWButtonHeld()) {
             SlowFallAtWall();
 
-        } else {
-            if (!isOnGround && !sliding && inputM.IsSlideButtonHeld()) {
+        } else if (!hitboxDown) {
+            if (!isOnGround && inputM.IsSlideButtonHeld()) {
                 FastFallInAir();
             }
 
@@ -146,6 +173,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision) {
         if (IsSurface(collision.gameObject.layer)) {
+            if (dashing) {
+                FinishDash();
+                rb.linearVelocity = Vector3.zero;
+            }
+
             Vector3 normal = collision.GetContact(0).normal;
             float range = 0.1f;
             bool isWall = -range < normal.y && normal.y < range;
@@ -153,10 +185,6 @@ public class PlayerMovement : MonoBehaviour
                 isOnWall = true;
                 wallGO = collision.gameObject;
                 wallNormal = normal;
-
-                if (sliding) {
-                    FinishSliding();
-                }
             }
 
             range = 0.3f;
@@ -166,15 +194,10 @@ public class PlayerMovement : MonoBehaviour
                 if (!isOnGround) {
                     airJumpCounter = 0;
                     isOnGround = true;
-                    if (inputM.IsSlideButtonHeld()) {
-                        ContinueSlideFromAir();
+                    if (inputM.IsSlideButtonHeld() && !sliding) {
+                        BeginSlideFromAir();
                     }
                 }
-            }
-
-            if (dashing) {
-                FinishDash();
-                rb.linearVelocity = Vector3.zero;
             }
         }
     }
@@ -202,15 +225,13 @@ public class PlayerMovement : MonoBehaviour
         int maxAirJumps = 1;
         if (isOnGround) {
             if (ShouldCancelSlide()) {
-                FinishSliding();
+                sliding = false;
+                OnFreeSlideThresholdPassed?.Invoke(this, new OnFreeSlideThresholdPassedEventArgs { shouldDrain = true });
             }
             Jump();
         } else if (isOnWall) {
             WallJump();
-        } else if (airJumpCounter < maxAirJumps) {
-            if (ShouldCancelSlide()) {
-                FinishSliding();
-            }
+        } else if (!hitboxDown && airJumpCounter < maxAirJumps) {
             AirJump();
         }
     }
@@ -259,6 +280,9 @@ public class PlayerMovement : MonoBehaviour
         Vector3 inputVector = inputM.GetMovementVector3Normalised();
         inputVector = GetRealSpaceVectorNormalised(inputVector);
         Vector3 moveVector = GetParallelToSurfaceNormalised(inputVector, surfaceNormal);
+        if (!isOnGround) {
+            moveVector = inputVector;
+        }
 
         bool moveIntoWall = Vector3.Angle(wallNormal, moveVector) > 90;
         if (isOnWall && moveIntoWall && !VectorsAreSimiliar(inputVector, -wallNormal, 10)) {
@@ -283,7 +307,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void BeginDash() {
-        if (!dashing && !sliding && PlayerLogic.Instance.GetCurrentStamina() >= dashStaminaCost) {
+        if (!dashing && !hitboxDown && PlayerLogic.Instance.GetCurrentStamina() >= dashStaminaCost) {
             PlayerLogic.Instance.DrainStamina(dashStaminaCost);
             PlayerLogic.Instance.SetInvulnerability(true);
             dashing = true;
@@ -322,40 +346,37 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        BeginSliding(0f);
+        BeginSliding();
     }
 
     private void InputManager_OnSlideReleased(object sender, System.EventArgs e) {
-        FinishSliding();
+        FinishSlide();
     }
 
-    private void ContinueSlideFromAir() {
-        float time = slideTimer;
-        if (!sliding) {
-            time = slideStartPeriod;
-        }
-
-        BeginSliding(time);
-    }
-
-    private bool ShouldCancelSlide() {
-        if (sliding) {
-            bool lookingInSlideDirection = VectorsAreSimiliar(rb.linearVelocity, GetLookingVector3(), 30);
-            bool moveInputIntoSlide = inputM.IsWButtonHeld() || inputM.GetMovementVector3Normalised() == Vector3.zero;
-
-            return !(lookingInSlideDirection && moveInputIntoSlide);
-        }
-        return false;
-    }
-
-    private void BeginSliding(float timerStart) {
-        if (isOnGround && !dashing && inputM.GetMovementVector3Normalised() == Vector3.forward && PlayerLogic.Instance.GetCurrentStamina() >= slideStaminaDrainRate) {
-            slideTimer = timerStart;
+    private void BeginSliding() {
+        if (isOnGround && !dashing) {
+            if (inputM.GetMovementVector3Normalised() == Vector3.forward && PlayerLogic.Instance.GetCurrentStamina() >= slideStaminaDrainRate * minimumSlideTime) {
+                slideTimer = 0f;
+                sliding = true;
+            }
             slideStartDirection = GetParallelToSurfaceNormalised(GetLookingVector3(), surfaceNormal);
+            HitboxDown();
+            OnFreeSlideThresholdPassed?.Invoke(this, new OnFreeSlideThresholdPassedEventArgs { shouldDrain = true });
+        }
+    }
+
+    private void BeginSlideFromAir() {
+        float time = 0f;
+        if (hitboxDown) {
+            time = slideStartPeriod + slideFadePeriod;
+        } else {
+            slideStartDirection = GetParallelToSurfaceNormalised(GetLookingVector3(), surfaceNormal);
+            HitboxDown();
+        }
+
+        if (PlayerLogic.Instance.GetCurrentStamina() >= slideStaminaDrainRate * minimumSlideTime) {
+            slideTimer = time;
             sliding = true;
-            mainCollider.enabled = false;
-            slideCollider.enabled = true;
-            OnSlideStart?.Invoke(this, new EventArgs());
         }
     }
 
@@ -366,24 +387,56 @@ public class PlayerMovement : MonoBehaviour
     private void HandleSlide() {
         float force = 0;
         if (isOnGround) {
-            Vector3 temp = Vector3.Cross(surfaceNormal, Vector3.up);
-            Vector3 downSlopeVector = Vector3.Cross(surfaceNormal, temp);
-            slideSlopeDownDirection = downSlopeVector.normalized;
+
+            if (surfaceAngle < slideMinimumAngle) {
+                slideSlopeDownDirection = slideStartDirection;
+
+            } else {
+                Vector3 temp = Vector3.Cross(surfaceNormal, Vector3.up);
+                Vector3 downSlopeVector = Vector3.Cross(surfaceNormal, temp);
+                if (downSlopeVector.y > 0) {
+                    downSlopeVector = -downSlopeVector;
+                }
+                slideSlopeDownDirection = downSlopeVector.normalized;
+            }
 
             force = slideDownMaxForce * Mathf.Sqrt(surfaceAngle / 45);
         } else {
             force = slideDownMaxForce * Mathf.Sqrt(slideMinimumAngle / 45);
         }
-
         rb.AddForce(slideSlopeDownDirection * force, ForceMode.Force);
 
     }
 
-    private void FinishSliding() {
+    private void FinishSlide() {
         sliding = false;
+        HitboxUp();
+        OnFreeSlideThresholdPassed?.Invoke(this, new OnFreeSlideThresholdPassedEventArgs { shouldDrain = true });
+    }
+
+    private bool ShouldCancelSlide() {
+        if (sliding) {
+            bool lookingInMomentumDirection = VectorsAreSimiliar(rb.linearVelocity, GetLookingVector3(), 15);
+            bool lookingInOriginalSlideDirection = VectorsAreSimiliar(slideStartDirection, GetLookingVector3(), 15);
+            bool moveInputIntoSlide = inputM.IsWButtonHeld() || inputM.GetMovementVector3Normalised() == Vector3.zero;
+
+            return !(lookingInMomentumDirection && lookingInOriginalSlideDirection && moveInputIntoSlide);
+        }
+        return false;
+    }
+
+    private void HitboxDown() {
+        hitboxDown = true;
+        mainCollider.enabled = false;
+        slideCollider.enabled = true;
+        OnHitboxDown?.Invoke(this, new EventArgs());
+    }
+
+    private void HitboxUp() {
+        hitboxDown = false;
         slideCollider.enabled = false;
         mainCollider.enabled = true;
-        OnSlideEnd?.Invoke(this, new EventArgs());
+        OnHitboxUp?.Invoke(this, new EventArgs());
     }
 
     private void CheckSurfaceAngle() {
@@ -409,6 +462,8 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
+
+
 
     private void SlowFallAtWall() {
         if (rb.linearVelocity.y < 0) {
@@ -459,7 +514,7 @@ public class PlayerMovement : MonoBehaviour
         return realSpaceVector.normalized;
     }
 
-    private Vector3 GetParallelToSurfaceNormalised(Vector3 originalVector, Vector3 surfaceNorm, bool viaY = true) {
+    private Vector3 GetParallelToSurfaceNormalised(Vector3 originalVector, Vector3 surfaceNorm) {
         float dotProduct = Vector3.Dot(originalVector, surfaceNorm);
         float requiredChangeInY = -dotProduct / surfaceNorm.y;
 
@@ -473,7 +528,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private Vector3 GetForwardVector3() {
-        Vector3 cameraVector = WeaponManager.Instance.GetLookingVector3();
+        Vector3 cameraVector = GetLookingVector3();
         Vector3 playerForwardVector = cameraVector;
         playerForwardVector.y = 0f;
         playerForwardVector = playerForwardVector.normalized;
@@ -482,7 +537,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private Vector3 GetLookingVector3() {
-        return WeaponManager.Instance.GetLookingVector3();
+        return Camera.main.transform.forward;
     }
 
     public Vector3 GetSlideStartDirection() {

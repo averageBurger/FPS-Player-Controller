@@ -9,7 +9,6 @@ public class RocketLauncher : ProjectileWeapon
     public override void ResolveProjectileCollision(Vector3 projectilePosition, GameObject gameObjectHit) {
         if (WeaponManager.Instance.HasHitEnemy(gameObjectHit.layer)) {
             gameObjectHit.GetComponent<Entity>().TakeDamage(damage);
-            Debug.Log("Deal Direct Damage: " + damage);
         }
 
         Collider[] nearbyObjectColliders = Physics.OverlapSphere(projectilePosition, explosionRadius, WeaponManager.Instance.GetWeaponInteractableLayerMask()); 
@@ -17,7 +16,6 @@ public class RocketLauncher : ProjectileWeapon
         foreach (Collider c in nearbyObjectColliders) {
             if (WeaponManager.Instance.HasHitEnemy(c.gameObject.layer) && IsInSplashLineOfSight(projectilePosition, c)) {
                 gameObjectHit.GetComponent<Entity>().TakeDamage(splashDamage);
-                Debug.Log("Deal splash Damage: " + splashDamage);
             }
         }
     }

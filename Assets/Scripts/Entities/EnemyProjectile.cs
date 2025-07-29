@@ -17,6 +17,16 @@ public abstract class EnemyProjectile : MonoBehaviour, IProjectile
     protected Rigidbody rb;
     protected Transform target;
 
+    private float despawnTimer = 0f;
+    private float maxTime = 20f;
+
+    private void Update() {
+        despawnTimer += Time.deltaTime;
+        if (despawnTimer > maxTime) {
+            Destroy(gameObject);
+        }
+    }
+
     public virtual void Spawn(Vector3 direction)
     {
         rb = GetComponent<Rigidbody>();

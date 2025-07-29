@@ -17,7 +17,6 @@ public abstract class ProjectileWeapon : RangedWeapon
 
         GameObject newProjectileGO = Instantiate(projectileGameObject, projectileSpawnPointTransform.position, Quaternion.identity);
         Projectile newProjectile = newProjectileGO.GetComponent<Projectile>();
-        Debug.Log("initialise!");
         newProjectile.Initialise(this, WeaponManager.Instance.GetLookingVector3(), projectileSpeed);
 
         return true;
